@@ -1,10 +1,19 @@
 /*jshint node:true*/
-"use strict";
-var data;
-(function (data) {
+
+namespace data {
+
     'use strict';
-    function getPeople() {
-        var people = [
+
+    interface IPeople {
+        id: number;
+        firstName: string;
+        lastName: string;
+        age: number;
+        location: string;
+    }
+
+    export function getPeople() {
+        var people: Array<IPeople> = [
             { id: 1, firstName: 'John', lastName: 'Papa', age: 27, location: 'Florida' },
             { id: 2, firstName: 'Ward', lastName: 'Bell', age: 31, location: 'California' },
             { id: 3, firstName: 'Colleen', lastName: 'Jones', age: 21, location: 'New York' },
@@ -15,9 +24,7 @@ var data;
             { id: 8, firstName: 'Aaron', lastName: 'Jinglehiemer', age: 22, location: 'Utah' }
         ];
         return people;
-    }
-    data.getPeople = getPeople;
-    ;
-})(data || (data = {}));
-module.exports = data;
-//# sourceMappingURL=data.js.map
+    };
+}
+
+export = data;

@@ -1,6 +1,6 @@
 /* jshint -W117, -W030 */
 /* jshint multistr:true */
-describe('htSidebar directive: ', function() {
+describe('htSidebar directive: ', function () {
   var dropdownElement;
   var el;
   var innerElement;
@@ -9,7 +9,7 @@ describe('htSidebar directive: ', function() {
 
   beforeEach(module('app.layout'));
 
-  beforeEach(inject(function($compile, $rootScope) {
+  beforeEach(inject(function ($compile, $rootScope) {
     // The minimum necessary template HTML for this spec.
     // Simulates a menu link that opens and closes a dropdown of menu items
     // The `when-done-animating` attribute is optional (as is the vm's implementation)
@@ -22,10 +22,10 @@ describe('htSidebar directive: ', function() {
     // N.B.: We do NOT add this element to the browser DOM (although we could).
     //       spec runs faster if we don't touch the DOM (even the PhantomJS DOM).
     el = angular.element(
-      '<ht-sidebar when-done-animating="vm.sidebarReady(42)">' +
-      '<div class="sidebar-dropdown"><a href="">Menu</a></div>' +
-      '<div class="sidebar-inner" style="display: none"></div>' +
-      '</ht-sidebar>');
+      '<ht-sidebar when-done-animating="vm.sidebarReady(42)" > \
+                <div class="sidebar-dropdown"><a href="">Menu</a></div> \
+                <div class="sidebar-inner" style="display: none"></div> \
+            </ht-sidebar>');
 
     // The spec examines changes to these template parts
     dropdownElement = el.find('.sidebar-dropdown a'); // the link to click
@@ -41,30 +41,30 @@ describe('htSidebar directive: ', function() {
   }));
 
   /// tests ///
-  describe('the isOpenClass', function() {
-    it('is absent for a closed menu', function() {
+  describe('the isOpenClass', function () {
+    it('is absent for a closed menu', function () {
       hasIsOpenClass(false);
     });
 
-    it('is added to a closed menu after clicking', function() {
+    it('is added to a closed menu after clicking', function () {
       clickIt();
       hasIsOpenClass(true);
     });
 
-    it('is present for an open menu', function() {
+    it('is present for an open menu', function () {
       openDropdown();
       hasIsOpenClass(true);
     });
 
-    it('is removed from a closed menu after clicking', function() {
+    it('is removed from a closed menu after clicking', function () {
       openDropdown();
       clickIt();
       hasIsOpenClass(false);
     });
   });
 
-  describe('when animating w/ jQuery fx off', function() {
-    beforeEach(function() {
+  describe('when animating w/ jQuery fx off', function () {
+    beforeEach(function () {
       // remember current state of jQuery's global FX duration switch
       this.oldFxOff = $.fx.off;
       // when jQuery fx are of, there is zero animation time; no waiting for animation to complete
@@ -73,25 +73,26 @@ describe('htSidebar directive: ', function() {
       el.appendTo(document.body);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       $.fx.off = this.oldFxOff;
       el.remove();
     });
 
-    it('dropdown is visible after opening a closed menu', function() {
+    it('dropdown is visible after opening a closed menu', function () {
       dropdownIsVisible(false); // hidden before click
       clickIt();
       dropdownIsVisible(true); // visible after click
     });
 
-    it('dropdown is hidden after closing an open menu', function() {
+    it('dropdown is hidden after closing an open menu', function () {
       openDropdown();
       dropdownIsVisible(true); // visible before click
       clickIt();
       dropdownIsVisible(false); // hidden after click
     });
 
-    it('click triggers "when-done-animating" expression', function() {
+    it('click triggers "when-done-animating" expression', function () {
+
       // spy on directive's callback when the animation is done
       var spy = sinon.spy();
 
@@ -112,7 +113,6 @@ describe('htSidebar directive: ', function() {
 
       // verify that the vm's method (sidebarReady) was called with '42'
       // FYI: spy.args[0] is the array of args passed to sidebarReady()
-      expect(spy).to.have.been.called;
       expect(spy).to.have.been.calledWith(42);
     });
   });
