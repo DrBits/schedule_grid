@@ -13,7 +13,7 @@ export class TimeOfDay {
         this.sinceMidnight = hour * 60 + minutes
     }
 
-    public toString: () => string = () => `TimeOfDay:${pad2(this.hour)}:${pad2(this.minutes)}`
+    public toString: () => string = () => `${pad2(this.hour)}:${pad2(this.minutes)}`
 
     // allows for comparisons with simple JS operators: < > === <= >=
     public valueOf: () => number = () => this.sinceMidnight

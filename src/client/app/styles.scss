@@ -1,0 +1,99 @@
+$column-width: 200px;
+$min-step: 20px;
+
+$dark-gray: #3b3b3a;
+$light-gray: #999a99;
+$bluish: #93cbd9;
+$bluish-gray: #d7e2e4;
+$green: #a9c88f;
+$orabge: #d2613e; 
+
+* { box-sizing: border-box; }
+html { font-family: sans-serif }
+
+table.doctor-schedule {
+  width: 100%;
+  border: none;
+  border-right: 5px solid white;
+}
+
+.step-30 {
+  height: $min-step * 3;
+  min-height: $min-step * 3;
+  max-height: $min-step * 3;
+  overflow: hidden;
+}
+
+.step-10 {
+  height: $min-step;
+  min-height: $min-step;
+  max-height: $min-step;
+  overflow: hidden;
+}
+
+div.activity::before {
+  display: block; 
+  content: attr(data-time) " " attr(data-descr);
+}
+
+.workingHours { background-color: #ffaaaa }
+.nonWorkingHours { background-color: $bluish-gray }
+.availableForAppointments { background-color: $green }
+
+.wrapper{
+    width: 100%;
+    height: 600px;
+    
+    overflow-x:scroll;
+    overflow-y: auto;
+}
+
+.content{
+  position: relative;
+  width: auto;
+  white-space:nowrap; 
+}
+
+.schedule {
+  font-size: 18px;
+  display: inline-block;
+  width: $column-width;
+  max-width: $column-width;
+  margin-right: 5px;
+
+  .activity {border-bottom: 1px dotted white; }
+}
+
+schedule {display: inline-block}
+
+.schedule-header {
+  position: absolute;
+  padding: 0px; margin: 0px;
+  text-align: center;
+  white-space: normal;
+  vertical-align: top;
+  display: inline-block;
+
+  .schedule-header-doctor {
+    margin-right: 5px;
+    border-radius: 7px 7px 0px 0px;
+    background-color: $light-gray;
+    width: $column-width;
+    max-width: $column-width;
+    display: inline-block;
+    vertical-align: top;
+    div {
+      padding: 5px;
+      &.date { background-color: $dark-gray; border-radius: 7px 7px 0px 0px; color: white; font-weight: bold;}
+      &.doctor-name { color: white; }
+      &.doctor-facility { background-color: $bluish; }
+      &.doctor-specialization { text-transform: lowercase; font-style: italic; color: white; border-top: 1px solid #b4b4b4}
+      &.human-readable-schedule {background-color: $green; }
+    }
+  }
+}
+
+.strut {
+  height: 10000px;
+  background-color: $bluish-gray;
+}

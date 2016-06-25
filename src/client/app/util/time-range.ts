@@ -21,5 +21,5 @@ export class TimeRange {
         return (tod >= this.since && tod < this.until)
     }
 
-    toString: () => string = () =>`TimeRange(${this.since.toString()}-${this.until.toString()})`
+    toString: () => string = () =>`${this.since.toString()}-${this.until.toString()}`
 }
