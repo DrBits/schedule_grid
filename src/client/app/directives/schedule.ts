@@ -16,7 +16,7 @@ export default class Schedule implements ng.IDirective {
     replace = false
 
     public template = `
-        <div data-ng-repeat="doctor in doctors" class="schedule">
+        <div data-ng-repeat="doctor in doctors" class="schedule" ng-if="doctor.worksOn(date)">
             <div class="schedule-header">
                 <div class="schedule-header-doctor">
                     <div class="date">{{prettyDate}}</div>

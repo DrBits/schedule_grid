@@ -20,7 +20,7 @@ export default class Cache<ID, T> {
     return this.cache[id]
   } 
 
-  has: (ID) => boolean = id => this.cache.hasOwnProperty(id)
+  has: (ID) => boolean = id => id in this.cache
   
   invalidate: (ID) => void = id => delete this.cache[id]
 }

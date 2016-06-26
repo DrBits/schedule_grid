@@ -1,6 +1,6 @@
 import {EffectiveSchedule} from "./schedules"
 import * as moment from 'moment'
-import {Activity} from "./activities"
+import {Activity, ActivityType} from "./activities"
 import Cache from "../util/cache"
 
 export class Doctor {
@@ -12,6 +12,7 @@ export class Doctor {
     schedule: EffectiveSchedule
 
     private cache: Cache<Date, Array<{Moment: Activity}>>
+    private hrCache: Cache<Date, {ActivityType: string}>
 
     constructor(
         name: string,
@@ -27,9 +28,9 @@ export class Doctor {
         this.specialization = specialization
         this.slotDuration = slotDuration
         this.schedule = schedule
-
-        const boundFn = this.calculateSchedule.bind(this)
-        this.cache = new Cache<Date, Array<{Moment: Activity}>>(boundFn)
+ 
+        this.cache = new Cache<Date, Array<{Moment: Activity}>>(this.calculateSchedule.bind(this))
+        this.hrCache = new Cache<Date, {ActivityType: string}>(this.calculateHumanReadableSchedule.bind(this))
     }
 
     calculateSchedule(date: Date): Array<{Moment: Activity}> {
@@ -44,7 +45,31 @@ export class Doctor {
         return schedule
     }
 
+    calculateHumanReadableSchedule(date: Date): {ActivityType: string} {
+        const scheduleForDay = this.schedule.forDay(date).filter(a => a.activity !== ActivityType.availableForAppointments)
+
+        const sch: {ActivityType: string} = <{ActivityType: string}>{}
+                
+        const aTypes = [ ActivityType.workingHours, ActivityType.unavailable, ActivityType.training, ActivityType.paperwork,
+          ActivityType.training, ActivityType.vacation, ActivityType.sickLeave ]
+
+        aTypes.forEach(aT => {
+            const xs = scheduleForDay.filter(a => a.activity === aT)
+            if (xs.length > 0) sch[aT] = xs.map(x => x.range.toString()).join(", ")
+        })
+
+        return sch
+    }
+
     getSchedule(date: Date): Array<{Moment: Activity}> {
         return this.cache.get(date)
+    }
+
+    getHumanReadableSchedule(date: Date): {ActivityType: string} {
+        return this.hrCache.get(date)
+    }
+
+    worksOn(date: Date) {
+        return ActivityType.workingHours in this.hrCache.get(date)
     }
 }
