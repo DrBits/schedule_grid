@@ -3,7 +3,7 @@ import {TimeOfDay} from './time-of-day'
 export class TimeRange {
     since: TimeOfDay
     until: TimeOfDay
-    
+
     constructor(p: [TimeOfDay, TimeOfDay] | string) {
         if (typeof p === 'string') {
             if (/\d\d?:\d\d?-\d\d?:\d\d?/.test(p)) {
@@ -16,10 +16,10 @@ export class TimeRange {
         }
     }
 
-    matches (date: Date): boolean {
+    matches(date: Date): boolean {
         const tod: TimeOfDay = new TimeOfDay([date.getHours(), date.getMinutes()])
         return (tod >= this.since && tod < this.until)
     }
 
-    toString: () => string = () =>`${this.since.toString()}-${this.until.toString()}`
+    toString: () => string = () => `${this.since.toString()}-${this.until.toString()}`
 }
