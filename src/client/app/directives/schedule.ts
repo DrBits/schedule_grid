@@ -24,10 +24,17 @@ export default class Schedule implements ng.IDirective {
                     <div class="doctor-specialization">{{doctor.specialization}}</div>
                     <div class="doctor-facility">{{doctor.facility}}, к.&nbsp;{{doctor.roomNumber}}</div>
                     <human-readable-schedule doctor="doctor" date="date"></human-readable-schedule>
+                    <div class="human-readable-schedule">
+                        <div ng-repeat="(a, b) in doctor.getHumanReadableSchedule(date)">{{a}} {{b}}</div>
+                    </div>
                 </div>
             </div>
             <div class="strut activity"></div>
-            <doctor-schedule doctor="doctor" date="date"></doctor-schedule>
+            <div data-ng-repeat="a in doctor.getSchedule(date)"
+                class="activity step-{{doctor.slotDuration}} {{a.activity.activity}}" 
+                data-descr="{{a.activity.description}}" 
+                data-time="{{a.time.format('HH:mm')}}">
+            </div>
         </div>
     `
 

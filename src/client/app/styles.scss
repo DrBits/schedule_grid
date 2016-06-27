@@ -1,15 +1,56 @@
 $column-width: 200px;
-$min-step: 20px;
+$min-step: 30px;
 
 $dark-gray: #3b3b3a;
 $light-gray: #999a99;
 $bluish: #93cbd9;
+$whitish: #e9e9ec;
 $bluish-gray: #d7e2e4;
 $green: #a9c88f;
-$orabge: #d2613e; 
+$orange: #d2613e;
+
+$left-pane-width: 300px;
+$toolbar-height: 50px;
 
 * { box-sizing: border-box; }
-html { font-family: sans-serif }
+
+html, body {
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+html { 
+  font-family: sans-serif;
+}
+
+.main-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.left-panel {
+  background-color: lightblue;
+  width: $left-pane-width;
+  height: 100%;
+}
+
+.toolbar {
+  position: absolute;
+  width: 100%;
+  height: $toolbar-height;
+  top: 0px;
+  left: 0px;
+}
+
+.right-panel {
+  width: calc(100% - #{$left-pane-width});
+  height: calc(100% - #{$toolbar-height});
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
 
 table.doctor-schedule {
   width: 100%;
@@ -31,37 +72,80 @@ table.doctor-schedule {
   overflow: hidden;
 }
 
-div.activity::before {
-  display: block; 
-  content: attr(data-time) " " attr(data-descr);
+.activity {
+  padding: 5px;
 }
 
-.workingHours { background-color: #ffaaaa }
-.nonWorkingHours { background-color: $bluish-gray }
-.availableForAppointments { background-color: $green }
+div.activity::before {
+  display: block; 
+  content: attr(data-descr);
+}
+
+.activity.availableForAppointments {
+  background-color: $whitish;
+  &::before {content: attr(data-time)} 
+}
+
+.activity.appointment {
+  background-color: $orange;
+  color: white;
+  &::before { content: attr(data-time) " " attr(data-descr); }
+}
+
+.workingHours { 
+  background-color: $light-gray;
+  & + .workingHours {
+    border: none !important;
+    &::before{content: ""}
+  }  
+}
+
+.unavailable {
+  background-color: $light-gray;
+  & + .unavailable {
+    border: none !important;
+    &::before{content: ""}
+  } 
+}
+
+.training {
+  background-color: $light-gray;
+  & + .training {
+    border: none !important;
+    &::before{content: ""}
+  } 
+}
+
+.nonWorkingHours {
+  background-color: $bluish-gray;
+  border-top: none !important;
+  &::before {content: "" !important}
+}
 
 .wrapper{
-    width: 100%;
-    height: 600px;
-    
-    overflow-x:scroll;
-    overflow-y: auto;
+  width: 100%;
+  height: 100%; 
+  overflow-x: scroll;
+  overflow-y: auto;
+  margin-top: $toolbar-height;
 }
 
 .content{
   position: relative;
   width: auto;
-  white-space:nowrap; 
+  white-space:nowrap;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .schedule {
-  font-size: 18px;
+  font-size: 14px;
   display: inline-block;
   width: $column-width;
   max-width: $column-width;
   margin-right: 5px;
 
-  .activity {border-bottom: 1px dotted white; }
+  .activity { border-top: 1px dotted white; }
 }
 
 schedule {display: inline-block}
@@ -88,7 +172,13 @@ schedule {display: inline-block}
       &.doctor-name { color: white; }
       &.doctor-facility { background-color: $bluish; }
       &.doctor-specialization { text-transform: lowercase; font-style: italic; color: white; border-top: 1px solid #b4b4b4}
-      &.human-readable-schedule {background-color: $green; }
+      &.human-readable-schedule { background-color: $green; }
+    }
+
+    &.collapsed {
+      div {
+        &.human-readable-schedule {display: none }
+      }
     }
   }
 }
@@ -96,4 +186,5 @@ schedule {display: inline-block}
 .strut {
   height: 10000px;
   background-color: $bluish-gray;
+  & + .activity { border-top: none; }
 }

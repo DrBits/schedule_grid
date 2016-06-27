@@ -108,6 +108,6 @@ export class Appointment extends OneOffActivity {
     }
 
     get description(): string {
-        return `${activityDescriptions[this.activity]}: ${this.patient.name}` 
+        return this.patient.shortName 
     }
 }

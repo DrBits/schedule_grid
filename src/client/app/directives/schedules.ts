@@ -13,16 +13,23 @@ export default class Schedules implements ng.IDirective {
     $timeout: ng.ITimeoutService
 
     public template = `
-        <div>
-            <button ng-click="setDays(1)" ng-disabled="days === 1">1 day</button>
-            <button ng-click="setDays(2)" ng-disabled="days === 2">2 days</button>
-            <button ng-click="setDays(7)" ng-disabled="days === 7">week</button>
-        </div>
-        <div class="wrapper" id="wrapper">
-            <div class="content">
-                <schedule ng-repeat="d in dates" date="d"></schedule>
+            <div class="main-container">
+                <div class="left-panel"></div>
+                <div class="right-panel">
+                    <div class="toolbar">
+                        <div>
+                            <button ng-click="setDays(1)" ng-disabled="days === 1">1 день</button>
+                            <button ng-click="setDays(2)" ng-disabled="days === 2">2 дня</button>
+                            <button ng-click="setDays(7)" ng-disabled="days === 7">неделя</button>
+                        </div>
+                    </div>
+                    <div class="wrapper" id="wrapper">
+                        <div class="content">
+                            <schedule ng-repeat="d in dates" date="d"></schedule>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
     `
 
     constructor($timeout) {
@@ -30,7 +37,6 @@ export default class Schedules implements ng.IDirective {
     }
 
     private setDays: (number) => void = n => {
-        console.log("setting days =", n)
         this.scope.days = n
         this.scope.dates = Array.apply(null, Array(this.scope.days))
             .map((_, i) => i)
@@ -40,15 +46,15 @@ export default class Schedules implements ng.IDirective {
 
     private handleScroll: (element: JQuery, reference: JQuery) => () => void = 
         (element, reference) => () => {
-            //console.log("scroll!", element, reference, reference.scrollTop())
-            //element.css( {top: reference.scrollTop() + 'px'} );
             const top = reference.scrollTop();
-            reference.find('.schedule-header').each((idx, e) => $(e).css({top: `${top}px`}))
+            reference.find('.schedule-header').each((idx, e) => {
+                $(e).css({top: `${top}px`})
+                // TODO: collapse headers if needed
+            })
         }
 
     private setStrutHeight() {
         const strutHeight = (Math.max(...$(document).find('.schedule-header').map((_, e) => e.clientHeight).toArray()))
-        console.log(`setting strut height to ${strutHeight}`)
         $(document).find('.strut').each((_, e) => $(e).css({height: `${strutHeight + 20}px`}))
     }
 
