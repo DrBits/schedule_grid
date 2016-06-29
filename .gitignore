@@ -75,3 +75,4 @@ Icon?
 Thumbs.db
 
 dist/
+bower_components/
