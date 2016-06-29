@@ -65,16 +65,16 @@ export const doctors: Doctor[] = [
         "ГП №128", 130,
         "Терапевт",
         10,
-        new EffectiveSchedule([
-            new PeriodicActivity(
-                ActivityType.workingHours, new TimeRange("14:00-18:00"), [5, 6],
-                moment().startOf('day').toDate(), // TODO 
-                moment().startOf('day').add(2, 'months').toDate()), // TODO
+        new EffectiveSchedule(
+            [
+                new PeriodicActivity(
+                    ActivityType.workingHours, new TimeRange("14:00-18:00"), [5, 6],
+                    moment().startOf('day').toDate(), // TODO
+                    moment().startOf('day').add(2, 'months').toDate()), // TODO
 
-            new PeriodicActivity(
-                ActivityType.availableForAppointments, new TimeRange("14:00-18:00"), [5, 6]),
-        ],
-
+                new PeriodicActivity(
+                    ActivityType.availableForAppointments, new TimeRange("14:00-18:00"), [5, 6]),
+            ],
             []
         )
     ),

@@ -161,7 +161,7 @@ schedule {display: inline-block}
   .schedule-header-doctor {
     margin-right: 5px;
     border-radius: 7px 7px 0px 0px;
-    background-color: $light-gray;
+    // background-color: $light-gray;
     width: $column-width;
     max-width: $column-width;
     display: inline-block;
@@ -169,15 +169,21 @@ schedule {display: inline-block}
     div {
       padding: 5px;
       &.date { background-color: $dark-gray; border-radius: 7px 7px 0px 0px; color: white; font-weight: bold;}
-      &.doctor-name { color: white; }
+      &.doctor-name { color: white; background-color: $light-gray; }
       &.doctor-facility { background-color: $bluish; }
-      &.doctor-specialization { text-transform: lowercase; font-style: italic; color: white; border-top: 1px solid #b4b4b4}
+      &.doctor-specialization { text-transform: lowercase; font-style: italic; color: white; border-top: 1px solid #b4b4b4; background-color: $light-gray; }
       &.human-readable-schedule { background-color: $green; }
     }
 
+    .doctor-working {
+      display: none;
+      background-color: $green;
+    }
+
     &.collapsed {
-      div {
-        &.human-readable-schedule {display: none }
+      .doctor-working {display: block;}
+      .human-readable-schedule {
+        visibility: hidden
       }
     }
   }

@@ -32,7 +32,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/client/app/main.html'
     }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin()
+    // new webpack.optimize.DedupePlugin(),
+    // new webpack.optimize.UglifyJsPlugin()
   ]
 }
