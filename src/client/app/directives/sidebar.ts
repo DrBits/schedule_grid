@@ -82,16 +82,22 @@ export default class Sidebar implements ng.IDirective {
                         		<div class="checkboxes">
                         			<div class="checkboxes__group">
 										<div class="checkboxes__item">
-											<input type="checkbox" id="11"/>
-											<label for="11">описание</label>
+											<div class="checkbox__info">
+												<input type="checkbox" id="11"/>
+												<label for="11">описание</label>
+											</div>
                         				</div>
                         				<div class="checkboxes__item">
-											<input type="checkbox" id="11"/>
-											<label for="11">описание</label>
+                        					<div class="checkbox__info">
+												<input type="checkbox" id="11"/>
+												<label for="11">описание</label>
+											</div>
                         				</div>
                         				<div class="checkboxes__item">
-											<input type="checkbox" id="11"/>
-											<label for="11">описание</label>
+                        					<div class="checkbox__info">
+												<input type="checkbox" id="11"/>
+												<label for="11">описание</label>
+											</div>	
                         				</div>
                         			</div>
                         		</div>
