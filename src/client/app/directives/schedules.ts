@@ -18,7 +18,9 @@ export default class Schedules implements ng.IDirective {
 
     public template = `
         <div class="main-container">
-            <div class="left-panel"></div>
+            <div class="left-panel">
+                <sidebar></sidebar>
+            </div>
             <div class="right-panel">
                 <div class="toolbar">
                     <div>

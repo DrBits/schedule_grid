@@ -3,6 +3,7 @@ import "angular"
 import Schedules from "./schedules"
 import Schedule from "./schedule"
 import IndividualSchedule from "./individual-schedule"
+import Sidebar from "./sidebar"
 
 angular.module('angular-ts')
 
@@ -14,3 +15,6 @@ angular.module('angular-ts')
   () => new Schedule())
 
 .directive('individualSchedule', () => new IndividualSchedule())
+
+.directive('sidebar',
+	() => new Sidebar())
