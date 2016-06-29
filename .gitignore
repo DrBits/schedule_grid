@@ -11,7 +11,7 @@ obj
 # Ignore Node & Bower
 ###################
 node_modules
-bower_components
+dist/bower_components
 build
 .tmp
 src/**/*.map
