@@ -15,6 +15,7 @@ export default class Schedules implements ng.IDirective {
     scope: ISchedulesScope
     $timeout: ng.ITimeoutService
     strutHeight: number = 0
+    wrapper: JQuery
 
     public template = `
         <div class="main-container">
@@ -47,7 +48,10 @@ export default class Schedules implements ng.IDirective {
         this.scope.dates = Array.apply(null, Array(this.scope.days))
             .map((_, i) => i)
             .map(i => moment().startOf("day").add(i, "days").toDate())
-        this.$timeout(this.setStrutHeight)
+        this.$timeout(() => {
+            this.setStrutHeight()
+            this.handleScroll()
+        })
     }
 
     @autobind private collapseHeader(element: Element, collapse: boolean) {
@@ -55,12 +59,11 @@ export default class Schedules implements ng.IDirective {
         else element.classList.remove('collapsed')
     }
 
-    private handleScroll: (reference: JQuery) => () => void = 
-        (reference) => () => {
-            const refTop = reference.scrollTop()
+    private handleScroll: () => void = 
+        () => {
+            const refTop = this.wrapper.scrollTop()
             this.scope.scrollPos = refTop
-        
-            reference.find('.schedule-header').each((idx, e) => $(e).css({top: `${refTop}px`}))
+            this.wrapper.find('.schedule-header').each((idx, e) => $(e).css({top: `${refTop}px`}))
         }
 
     @autobind private setStrutHeight() {
@@ -72,10 +75,10 @@ export default class Schedules implements ng.IDirective {
         this.scope = scope
         this.scope.setDays = this.setDays
         this.setDays(1)
-        const wrapper = $(element).find('#wrapper')
-        scope.scrollRef = wrapper[0]
+        this.wrapper = $(element).find('#wrapper')
+        scope.scrollRef = this.wrapper[0]
         
         this.scope.scrollPos = 0
-        wrapper.on('scroll', this.handleScroll($(element).find('#wrapper')))
+        this.wrapper.on('scroll', this.handleScroll)
     }
 }

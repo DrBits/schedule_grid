@@ -14,7 +14,7 @@ angular.module('angular-ts')
 .directive('schedule', 
   () => new Schedule())
 
-.directive('individualSchedule', () => new IndividualSchedule())
+.directive('individualSchedule', ['$timeout', ($timeout) => new IndividualSchedule($timeout)])
 
 .directive('sidebar',
 	() => new Sidebar())

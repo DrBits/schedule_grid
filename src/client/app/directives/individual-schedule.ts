@@ -28,6 +28,11 @@ export default class IndividualSchedule implements ng.IDirective {
   private humanReadableSchedule: Element
   private strut: Element
   private scheduleHeader: Element
+  private $timeout: ng.ITimeoutService
+
+  constructor($timeout) {
+      this.$timeout = $timeout
+  }
 
   public template = `
       <div>
@@ -86,7 +91,10 @@ export default class IndividualSchedule implements ng.IDirective {
     this.scheduleHeader = element[0].querySelector(".schedule-header-doctor")
     this.strut = element[0].querySelector(".strut")
     this.$scope = scope
-    scope.scrollRef.addEventListener("scroll", this.handleScroll())
+    const scrollHandler = this.handleScroll()
+    scope.scrollRef.addEventListener("scroll", scrollHandler)
     scope.uncollapse = this.uncollapse()
+    console.log("linked!")
+    this.$timeout(scrollHandler)
   }
 }
