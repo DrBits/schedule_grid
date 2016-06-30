@@ -39,7 +39,7 @@ export default class IndividualSchedule implements ng.IDirective {
       <div>
         <div class="schedule-header"> 
             <div class="schedule-header-doctor" ng-class="{collapsed: shouldCollapse() }">
-                <div class="date">{{prettyDate}}{{forceUncollapse}}</div>
+                <div class="date">{{prettyDate}}</div>
                 <div class="doctor-name">{{doctor.name}}</div>
                 <div class="doctor-specialization">{{doctor.specialization}}</div>
                 <div class="doctor-facility">{{doctor.facility}}, к.&nbsp;{{doctor.roomNumber}}</div>
