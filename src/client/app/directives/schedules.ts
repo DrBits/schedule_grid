@@ -4,15 +4,20 @@ import * as $ from 'jquery'
 import {autobind} from "core-decorators"
 
 interface ISchedulesScope extends ng.IScope {
+    startDat: Date
     days: number
     dates: Array<Date>
-    setDays: (number) => void
+    setDays: (number, Date) => void
     scrollRef: Element
     scrollPos: number
 }
 
+const today: () => Date = () => moment().startOf("day").toDate() 
+
 export default class Schedules implements ng.IDirective {
     scope: ISchedulesScope
+    $scope: ISchedulesScope
+
     $timeout: ng.ITimeoutService
     strutHeight: number = 0
     wrapper: JQuery
@@ -43,16 +48,16 @@ export default class Schedules implements ng.IDirective {
         this.$timeout = $timeout
     }
 
-    private setDays: (number) => void = n => {
-        this.scope.days = n
-        this.scope.dates = Array.apply(null, Array(this.scope.days))
+    private setDays: (number, Date) => void = (n, startDay) => {
+        this.$scope.days = n
+        this.$scope.dates = Array.apply(null, Array(this.$scope.days))
             .map((_, i) => i)
-            .map(i => moment().startOf("day").add(i, "days").toDate())
+            .map(i => moment(startDay).add(i, "days").toDate())
         this.$timeout(() => {
             this.setStrutHeight()
             this.handleScroll()
         })
-    }
+    } 
 
     @autobind private collapseHeader(element: Element, collapse: boolean) {
         if (collapse) element.classList.add('collapsed')
@@ -62,7 +67,7 @@ export default class Schedules implements ng.IDirective {
     private handleScroll: () => void = 
         () => {
             const refTop = this.wrapper.scrollTop()
-            this.scope.scrollPos = refTop
+            this.$scope.$apply(() => this.$scope.scrollPos = refTop)
             this.wrapper.find('.schedule-header').each((idx, e) => $(e).css({top: `${refTop}px`}))
         }
 
@@ -72,13 +77,13 @@ export default class Schedules implements ng.IDirective {
     }
 
     public link(scope: ISchedulesScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
-        this.scope = scope
-        this.scope.setDays = this.setDays
-        this.setDays(1)
+        this.$scope = this.scope = scope
+        this.$scope.setDays = this.setDays
+        this.setDays(1, today())
         this.wrapper = $(element).find('#wrapper')
         scope.scrollRef = this.wrapper[0]
         
-        this.scope.scrollPos = 0
+        this.$scope.scrollPos = 0
         this.wrapper.on('scroll', this.handleScroll)
     }
 }

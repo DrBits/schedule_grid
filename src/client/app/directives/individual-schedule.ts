@@ -13,6 +13,7 @@ interface IIndividualScheduleScope extends ng.IScope {
     collapse: boolean
     scrollPos: number
     uncollapse: () => void
+    forceUncollapse: boolean
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -37,8 +38,8 @@ export default class IndividualSchedule implements ng.IDirective {
   public template = `
       <div>
         <div class="schedule-header"> 
-            <div class="schedule-header-doctor">
-                <div class="date">{{prettyDate}}</div>
+            <div class="schedule-header-doctor" ng-class="{collapsed: shouldCollapse() }">
+                <div class="date">{{prettyDate}}{{forceUncollapse}}</div>
                 <div class="doctor-name">{{doctor.name}}</div>
                 <div class="doctor-specialization">{{doctor.specialization}}</div>
                 <div class="doctor-facility">{{doctor.facility}}, к.&nbsp;{{doctor.roomNumber}}</div>
@@ -61,40 +62,32 @@ export default class IndividualSchedule implements ng.IDirective {
   `
 
   private uncollapse: () => () => void = () => {
+    const scope = this.$scope
     const header = this.scheduleHeader
-    return () => header.classList.remove("collapsed")
+    return () => scope.forceUncollapse = true
   }
 
   private shouldCollapse: () => () => boolean = () => {
-    const scrollRef = this.$scope.scrollRef
     const hrs = this.humanReadableSchedule
-    const strut = this.strut 
-    return () =>{
-      const refTop = scrollRef.scrollTop
-      const eMiddle = (<HTMLDivElement><any>hrs).offsetTop + hrs.clientHeight / 2
-      return strut.clientHeight - refTop < eMiddle
-    }
-  }
-
-  private handleScroll: () => () => void = () => {
-    const header = this.scheduleHeader
-    const shouldCollapse = this.shouldCollapse()
+    const scope = this.$scope
     return () => {
-      if (shouldCollapse()) header.classList.add('collapsed')
-      else header.classList.remove('collapsed')
-    }
+      if (scope.forceUncollapse) {
+        // this is ugly, but this is Angular
+        setTimeout(() => {scope.forceUncollapse = false}, 500)
+        return false
+      }
+      return this.strut.clientHeight - scope.scrollPos < (<HTMLDivElement><any>hrs).offsetTop + hrs.clientHeight / 2}
   }
 
   public link(scope: IIndividualScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
-    scope.prettyDate = moment(scope.date).format("dd MM DD")
+    scope.prettyDate = moment(scope.date).locale("ru").format("dd. DD MMM")
     this.humanReadableSchedule = element[0].querySelector(".human-readable-schedule")
     this.scheduleHeader = element[0].querySelector(".schedule-header-doctor")
     this.strut = element[0].querySelector(".strut")
     this.$scope = scope
-    const scrollHandler = this.handleScroll()
-    scope.scrollRef.addEventListener("scroll", scrollHandler)
+
+    scope.shouldCollapse = this.shouldCollapse()
     scope.uncollapse = this.uncollapse()
-    console.log("linked!")
-    this.$timeout(scrollHandler)
+    scope.forceUncollapse = false
   }
 }

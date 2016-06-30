@@ -8,7 +8,6 @@ interface IScheduleScope extends ng.IScope {
     date: Date
     doctors: Doctor[]
     scheduleGrid: { Moment: Activity }[]
-    prettyDate: string
     scrollRef: Element
 }
 
@@ -30,6 +29,5 @@ export default class Schedule implements ng.IDirective {
 
     public link(scope: IScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
         scope.doctors = doctors
-        scope.prettyDate = moment(scope.date).format("dd MM DD")
     }
 }
