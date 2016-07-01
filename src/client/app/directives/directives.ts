@@ -7,7 +7,7 @@ import Sidebar from "./sidebar"
 import PatientFilter from "./patient-filter"
 import RecordDate from "./record-date"
 import DoctorFilter from "./doctor-filter"
-
+import FilterController from "../controllers/filter-controller"
 
 angular.module('angular-ts')
 

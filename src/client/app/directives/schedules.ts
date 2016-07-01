@@ -2,6 +2,7 @@ import "angular"
 import * as moment from "moment"
 import * as $ from 'jquery'
 import {autobind} from "core-decorators"
+import ScheduleController from "../controllers/schedule-controller"
 
 interface ISchedulesScope extends ng.IScope {
     startDat: Date
@@ -17,6 +18,7 @@ const today: () => Date = () => moment().startOf("day").toDate()
 export default class Schedules implements ng.IDirective {
     scope: ISchedulesScope
     $scope: ISchedulesScope
+    controller = ScheduleController
 
     $timeout: ng.ITimeoutService
     strutHeight: number = 0
@@ -37,7 +39,7 @@ export default class Schedules implements ng.IDirective {
                 </div>
                 <div class="wrapper" id="wrapper">
                     <div class="content">
-                        <schedule ng-repeat="d in dates" date="d" scroll-ref="scrollRef" scroll-pos="scrollPos"></schedule>
+                        <schedule ng-repeat="d in dates" date="d" scroll-ref="scrollRef" scroll-pos="scrollPos" doctor-filter="doctorFilter"></schedule>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import {doctors} from "../domain/data"
 import {Doctor} from "../domain/doctor"
 import {lazyInitialize as lazy} from "core-decorators"
 import {groupBy, sortBy} from "lodash"
+import FilterController from "../controllers/filter-controller"
 
 enum ShowBy {
   alpabet = <ShowBy><any>'alphabet',
@@ -20,10 +21,12 @@ interface IDoctorFilterScope extends ng.IScope {
 export default class DoctorFilter implements ng.IDirective { 
   $scope: IDoctorFilterScope 
   replace = true
+  require = "^schedules"
+  restrict = 'E'
+  controller: FilterController
 
   public template: string = `
     <li class="sidebar-item">
-        <div class="custom-info-search-form">
             <span class="name-info">СПЕЦИАЛИСТЫ ({{doctors.length}}/{{doctors.length}})</span>
             <span class="pull-right">
                 <div class="btn-group">
@@ -70,12 +73,17 @@ export default class DoctorFilter implements ng.IDirective {
   private showByAlphabet: () => void = () => this.$scope.showBy = ShowBy.alpabet
   private showBySpecialization: () => void = () => this.$scope.showBy = ShowBy.specialization 
 
-  public link(scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) {
+  public link(scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, filterController: FilterController) {
     this.$scope = <IDoctorFilterScope>scope
     this.$scope.doctors = sortBy(doctors, 'name')
     this.$scope.doctorsBySpecialization = groupBy(doctors, 'specialization')
     this.$scope.showBy = ShowBy.alpabet
     this.$scope.showBySpecialization = this.showBySpecialization
     this.$scope.showByAlphabet = this.showByAlphabet
+    this.controller = filterController
+
+    console.log(scope)
+    console.log(arguments)
+    filterController.test()
   }
 }
