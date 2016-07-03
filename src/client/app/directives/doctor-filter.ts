@@ -3,11 +3,11 @@ import {doctors} from "../domain/data"
 import {Doctor} from "../domain/doctor"
 import {lazyInitialize as lazy} from "core-decorators"
 import {groupBy, sortBy} from "lodash"
-import FilterController from "../controllers/filter-controller"
+import FilterController from "../controllers/schedule-controller"
 
 enum ShowBy {
-  alpabet = <ShowBy><any>'alphabet',
-  specialization = <ShowBy><any>'specialization'
+  alpabet = 'alphabet' as any as ShowBy,
+  specialization = 'specialization' as any as ShowBy
 }
 
 interface IDoctorFilterScope extends ng.IScope {
@@ -53,15 +53,16 @@ export default class DoctorFilter implements ng.IDirective {
                 <div class="checkboxes__group">
                     <div ng-if="showBy === 'alphabet'" ng-repeat="doctor in doctors" class="checkboxes__item">
                         <div class="checkbox__info">
-                            <input type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+                            <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
                         </div>
                     </div>
                     <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="checkboxes__item">
-                        <div>{{specialization}}</div>
-                        <div ng-repeat="doctor in doctors">
-                          <div class="checkbox__info">
-                              <input type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
-                          </div>
+                        <div>{{specialization}}
+                            <div ng-repeat="doctor in doctors">
+                            <div class="checkbox__info">
+                                <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -74,16 +75,12 @@ export default class DoctorFilter implements ng.IDirective {
   private showBySpecialization: () => void = () => this.$scope.showBy = ShowBy.specialization 
 
   public link(scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, filterController: FilterController) {
-    this.$scope = <IDoctorFilterScope>scope
+    this.$scope = scope as IDoctorFilterScope
     this.$scope.doctors = sortBy(doctors, 'name')
     this.$scope.doctorsBySpecialization = groupBy(doctors, 'specialization')
     this.$scope.showBy = ShowBy.alpabet
     this.$scope.showBySpecialization = this.showBySpecialization
     this.$scope.showByAlphabet = this.showByAlphabet
     this.controller = filterController
-
-    console.log(scope)
-    console.log(arguments)
-    filterController.test()
   }
 }

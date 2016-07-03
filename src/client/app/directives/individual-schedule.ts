@@ -3,6 +3,7 @@ import {Doctor} from "../domain/doctor"
 import * as moment from "moment"
 import {autobind} from "core-decorators"
 import * as $ from 'jquery'
+import ScheduleController from "../controllers/schedule-controller"
 
 interface IIndividualScheduleScope extends ng.IScope {
     date: Date
@@ -14,6 +15,7 @@ interface IIndividualScheduleScope extends ng.IScope {
     scrollPos: number
     uncollapse: () => void
     forceUncollapse: boolean
+    strutHeight: number
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -21,11 +23,14 @@ export default class IndividualSchedule implements ng.IDirective {
     doctor: '=',
     date: '=',
     scrollRef: '=',
-    scrollPos: '='
+    scrollPos: '=',
+    strutHeight: '='
   }
 
   $scope: IIndividualScheduleScope
+  controller: ScheduleController
   replace = true
+  require="^schedules"
   private humanReadableSchedule: Element
   private strut: Element
   private scheduleHeader: Element
@@ -52,7 +57,7 @@ export default class IndividualSchedule implements ng.IDirective {
                 </div>
             </div>
         </div>
-        <div class="strut activity"></div>
+        <div class="strut activity" style="height: {{strutHeight}}px"></div>
         <div data-ng-repeat="a in doctor.getSchedule(date)"
             class="activity step-{{doctor.slotDuration}} {{a.activity.activity}}" 
             data-descr="{{a.activity.description}}" 
@@ -72,14 +77,13 @@ export default class IndividualSchedule implements ng.IDirective {
     const scope = this.$scope
     return () => {
       if (scope.forceUncollapse) {
-        // this is ugly, but this is Angular
         setTimeout(() => {scope.forceUncollapse = false}, 500)
         return false
       }
       return this.strut.clientHeight - scope.scrollPos < (<HTMLDivElement><any>hrs).offsetTop + hrs.clientHeight / 2}
   }
 
-  public link(scope: IIndividualScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
+  public link(scope: IIndividualScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, ctl: ScheduleController) {
     scope.prettyDate = moment(scope.date).locale("ru").format("dd. DD MMM")
     this.humanReadableSchedule = element[0].querySelector(".human-readable-schedule")
     this.scheduleHeader = element[0].querySelector(".schedule-header-doctor")

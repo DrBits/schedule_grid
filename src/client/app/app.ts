@@ -1,5 +1,7 @@
 import "angular"
-const app: ng.IModule = angular.module("angular-ts", [])
+import "angular-ui-bootstrap"
+
+const app: ng.IModule = angular.module("angular-ts", ['ui.bootstrap'])
 
 import "./styles.scss"
 import "./controllers/controllers"

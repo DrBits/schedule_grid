@@ -11,6 +11,7 @@ interface ISchedulesScope extends ng.IScope {
     setDays: (number, Date) => void
     scrollRef: Element
     scrollPos: number
+    strutHeight: number
 }
 
 const today: () => Date = () => moment().startOf("day").toDate() 
@@ -32,14 +33,16 @@ export default class Schedules implements ng.IDirective {
             <div class="right-panel">
                 <div class="toolbar">
                     <div>
-                        <button ng-click="setDays(1)" ng-disabled="days === 1">1 день</button>
-                        <button ng-click="setDays(2)" ng-disabled="days === 2">2 дня</button>
-                        <button ng-click="setDays(7)" ng-disabled="days === 7">неделя</button>
+                        <div class="btn-group">
+                            <label class="btn btn-success" ng-model="days" uib-btn-radio="1" uncheckable>1 день</label>
+                            <label class="btn btn-success" ng-model="days" uib-btn-radio="2" uncheckable>2 дня</label>
+                            <label class="btn btn-success" ng-model="days" uib-btn-radio="7" uncheckable>неделя</label>
+                        </div>
                     </div>
                 </div>
                 <div class="wrapper" id="wrapper">
                     <div class="content">
-                        <schedule ng-repeat="d in dates" date="d" scroll-ref="scrollRef" scroll-pos="scrollPos" doctor-filter="doctorFilter"></schedule>
+                        <schedule ng-repeat="d in dates" date="d" scroll-ref="scrollRef" scroll-pos="scrollPos" doctor-filter="doctorFilter" strut-height="strutHeight" ></schedule>
                     </div>
                 </div>
             </div>
@@ -74,8 +77,7 @@ export default class Schedules implements ng.IDirective {
         }
 
     @autobind private setStrutHeight() {
-        this.strutHeight = (Math.max(...$(document).find('.schedule-header').map((_, e) => e.clientHeight).toArray())) + 20
-        $(document).find('.strut').each((_, e) => $(e).css({height: `${this.strutHeight}px`}))
+        this.scope.strutHeight = (Math.max(...$(document).find('.schedule-header').map((_, e) => e.clientHeight).toArray())) + 20
     }
 
     public link(scope: ISchedulesScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
@@ -87,5 +89,7 @@ export default class Schedules implements ng.IDirective {
         
         this.$scope.scrollPos = 0
         this.wrapper.on('scroll', this.handleScroll)
+
+        this.$scope.$watch('days', days => this.$scope.setDays(days, today()))
     }
 }

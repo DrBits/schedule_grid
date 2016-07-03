@@ -1,6 +1,7 @@
 {
   "globalDependencies": {
     "angular": "registry:dt/angular#1.5.0+20160619025852",
+    "angular-ui-bootstrap": "registry:dt/angular-ui-bootstrap#0.13.3+20160602140119",
     "core-decorators": "registry:dt/core-decorators#0.10.0+20160316155526",
     "jquery": "registry:dt/jquery#1.10.0+20160417213236"
   },

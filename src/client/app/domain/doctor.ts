@@ -11,6 +11,7 @@ export class Doctor {
     specialization: string
     slotDuration: number
     schedule: EffectiveSchedule
+    public visible: boolean = true
 
     private cache: Cache<Date, Array<{Moment: Activity}>>
     private hrCache: Cache<Date, {ActivityType: string}>

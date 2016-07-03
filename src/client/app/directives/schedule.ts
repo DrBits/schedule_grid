@@ -11,6 +11,7 @@ interface IScheduleScope extends ng.IScope {
     scheduleGrid: { Moment: Activity }[]
     scrollRef: Element
     doctorFilter: Doctor[]
+    strutHeight: number
 }
 
 export default class Schedule implements ng.IDirective {
@@ -18,7 +19,8 @@ export default class Schedule implements ng.IDirective {
         date: '=', 
         scrollRef: '=',
         scrollPos: '=',
-        doctorFilter: '='
+        doctorFilter: '=',
+        strutHeight: '='
     }
 
     replace = false
@@ -26,8 +28,8 @@ export default class Schedule implements ng.IDirective {
     controller: ScheduleController
 
     public template = `
-        <div data-ng-repeat="doctor in doctors" class="schedule" ng-if="doctor.worksOn(date)">
-            <individual-schedule doctor="doctor" date="date" scroll-ref="scrollRef" scroll-pos="scrollPos"></individual-schedule>
+        <div data-ng-repeat="doctor in doctors" class="schedule" ng-if="doctor.worksOn(date) && doctor.visible">
+            <individual-schedule doctor="doctor" date="date" scroll-ref="scrollRef" scroll-pos="scrollPos" strut-height="strutHeight"></individual-schedule>
         </div>
     `
 
