@@ -5,6 +5,7 @@ interface IRecordDateScope extends ng.IScope {
     open2: () => void
     popup2: boolean
     format: string
+    dateOptions: any
 }
 
 export default class RecordDate implements ng.IDirective {
@@ -18,7 +19,17 @@ export default class RecordDate implements ng.IDirective {
                         		<div class="clearfix"></div>
                         	</div>
                         	<div class="input-group custom-search-form date" id="datetimepicker1">
-                    			<input type='text' class="form-control" uib-datepicker-popup={{format}} ng-model="dt" is-open="popup2" min-date="minDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" placeholder="ДД.ММ.ГГГГ"/>
+                    			<input
+                    			    type="text"
+                    			    class="form-control"
+                    			    uib-datepicker-popup="{{format}}"
+                    			    ng-model="dt"
+                    			    is-open="popup2"
+                    			    datepicker-options="dateOptions"
+                    			    ng-required="true"
+                    			    close-text="Close"
+                    			    alt-input-formats="altInputFormats"
+                    			    placeholder="ДД.ММ.ГГГГ"/>
                     			<span class="input-group-btn">
                         			<button class="btn btn-default" ng-click="open2()">
 										<i class="fa fa-calendar"></i>
@@ -30,6 +41,11 @@ export default class RecordDate implements ng.IDirective {
 
     private open2: () => void = () => {
         this.$scope.popup2 = true
+        this.$scope.dateOptions = {
+            formatYear: 'yy',
+            minDate: new Date(),
+            startingDay: 1
+        };
     }
 
     public link(scope: IRecordDateScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) {
