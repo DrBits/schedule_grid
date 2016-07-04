@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "init": "npm install",
-    "install": "bower install",
-    "start": "node src/server/app.js",
+    "install": "bower install; typings install",
+    "start": "ws --directory dist",
     "test": "gulp test"
   },
   "dependencies": {
@@ -62,6 +62,7 @@
     "gulp-util": "^3.0.1",
     "html-webpack-plugin": "^2.21.0",
     "jshint-stylish": "^1.0.0",
+    "local-web-server": "^1.2.6",
     "merge2": "^0.3.4",
     "method-override": "^1.0.2",
     "minimist": "^1.1.0",
