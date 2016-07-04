@@ -18,8 +18,8 @@ interface IDoctorFilterScope extends ng.IScope {
   showByAlphabet: () => void
 }
 
-export default class DoctorFilter implements ng.IDirective { 
-  $scope: IDoctorFilterScope 
+export default class DoctorFilter implements ng.IDirective {
+  $scope: IDoctorFilterScope
   replace = true
   require = "^schedules"
   restrict = 'E'
@@ -27,13 +27,22 @@ export default class DoctorFilter implements ng.IDirective {
 
   public template: string = `
     <li class="sidebar-item">
+        <div class="custom-info-search-form">
             <span class="name-info">СПЕЦИАЛИСТЫ ({{doctors.length}}/{{doctors.length}})</span>
             <span class="pull-right">
-                <div class="btn-group">
-                  <button class="btn btn-success btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div class="btn-group" uib-dropdown>
+                  <button class="btn btn-success btn-xs dropdown-toggle" uib-dropdown-toggle type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-filter"></i>
                     <span class="caret"></span>
                   </button>
+                  <ul class="dropdown-menu pull-left" uib-dropdown-menu>
+    				<li>
+    				    <a href="#"><i class="fa fa-check"></i> Выбрать все</a>
+    				</li>
+    				<li>
+    				    <a href="#"><i class="fa fa-times"></i> Отменить все</a>
+    				</li>
+  				  </ul>
                 </div>
             </span>
             <div class="clearfix"></div>
@@ -72,7 +81,7 @@ export default class DoctorFilter implements ng.IDirective {
   `
 
   private showByAlphabet: () => void = () => this.$scope.showBy = ShowBy.alpabet
-  private showBySpecialization: () => void = () => this.$scope.showBy = ShowBy.specialization 
+  private showBySpecialization: () => void = () => this.$scope.showBy = ShowBy.specialization
 
   public link(scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, filterController: FilterController) {
     this.$scope = scope as IDoctorFilterScope
