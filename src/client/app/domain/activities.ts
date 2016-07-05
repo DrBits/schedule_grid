@@ -28,7 +28,7 @@ const activityPriorities: { [key: string]: number } = {
     [ActivityType.sickLeave]: 5,
 }
 
-const activityDescriptions: { [key: string]: string } = {
+export const activityDescriptions: { [key: string]: string } = {
     [ActivityType.nonWorkingHours]: "Нерабочее время",
     [ActivityType.workingHours]: "Врач не принимает",
     [ActivityType.availableForAppointments]: "Запись на прием",

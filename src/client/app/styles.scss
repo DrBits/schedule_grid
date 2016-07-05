@@ -172,7 +172,10 @@ schedule {display: inline-block}
       &.doctor-name { color: white; background-color: $light-gray; }
       &.doctor-facility { background-color: $bluish; }
       &.doctor-specialization { text-transform: lowercase; font-style: italic; color: white; border-top: 1px solid #b4b4b4; background-color: $light-gray; }
-      &.human-readable-schedule { background-color: $green; }
+      &.human-readable-schedule { 
+          background-color: $green;
+          .time-range + .time-range::before {display: inline-block; content: ", "; color: black;}
+        }
     }
 
     .doctor-working {

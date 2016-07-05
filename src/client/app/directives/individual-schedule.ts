@@ -4,6 +4,8 @@ import * as moment from "moment"
 import {autobind} from "core-decorators"
 import * as $ from 'jquery'
 import ScheduleController from "../controllers/schedule-controller"
+import {TimeRange} from "../util/time-range"
+import {activityDescriptions} from "../domain/activities"
 
 interface IIndividualScheduleScope extends ng.IScope {
     date: Date
@@ -16,6 +18,8 @@ interface IIndividualScheduleScope extends ng.IScope {
     uncollapse: () => void
     forceUncollapse: boolean
     strutHeight: number
+    scrollTo: (string) => void
+    activityDescriptions: {[key: string]: string}
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -53,7 +57,8 @@ export default class IndividualSchedule implements ng.IDirective {
                     Врач работает <button ng-click="uncollapse()">...</button>
                 </div>
                 <div class="human-readable-schedule">
-                    <div ng-repeat="(a, b) in doctor.getHumanReadableSchedule(date)">{{a}} {{b}}</div>
+                    <div ng-repeat="(a, b) in doctor.getHumanReadableSchedule(date)">{{a === "workingHours" ? '' : activityDescriptions[a]}} 
+                    <a ng-repeat="range in b" href="#" ng-click="scrollTo(range)" class="time-range">{{range}}</a></div>
                 </div>
             </div>
         </div>
@@ -83,6 +88,16 @@ export default class IndividualSchedule implements ng.IDirective {
       return this.strut.clientHeight - scope.scrollPos < (<HTMLDivElement><any>hrs).offsetTop + hrs.clientHeight / 2}
   }
 
+  @autobind private scrollTo(time: string) {
+      console.log("---", time)
+      const tr = new TimeRange(time)
+      const e = $(this.$scope.scrollRef).find(`[data-time='${tr.since.toString()}']`)[0]
+      console.log(`will scroll to ${tr.since}`, e)
+      const newScrollPos = e.offsetTop - this.$scope.strutHeight
+      console.log("-->", newScrollPos)
+      $(this.$scope.scrollRef).animate({scrollTop: newScrollPos}, 100)
+  }
+
   public link(scope: IIndividualScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, ctl: ScheduleController) {
     scope.prettyDate = moment(scope.date).locale("ru").format("dd. DD MMM")
     this.humanReadableSchedule = element[0].querySelector(".human-readable-schedule")
@@ -93,5 +108,7 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.shouldCollapse = this.shouldCollapse()
     scope.uncollapse = this.uncollapse()
     scope.forceUncollapse = false
+    scope.scrollTo = this.scrollTo
+    scope.activityDescriptions = activityDescriptions
   }
 }

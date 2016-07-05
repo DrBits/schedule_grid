@@ -57,7 +57,7 @@ export class Doctor {
 
         aTypes.forEach(aT => {
             const xs = scheduleForDay.filter(a => a.activity === aT)
-            if (xs.length > 0) sch[aT] = xs.map(x => x.range.toString()).join(", ")
+            if (xs.length > 0) sch[aT] = xs.map(x => x.range.toString())
         })
 
         return sch
