@@ -564,9 +564,13 @@ table.dataTable thead .sorting:after {
     height: 72px;
     line-height: 72px;
     background: #fff;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #ddd;
 }
 
 .checkbox__info {
   margin-left: 15px;
+}
+
+.checkbox__info label{
+  margin-left: 5px;
 }
