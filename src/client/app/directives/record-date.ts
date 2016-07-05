@@ -1,7 +1,6 @@
 import "angular";
 import {AppState, appState} from "../app-state"
 
-
 interface IRecordDateScope extends ng.IScope {
     open2: () => void
     popup2: boolean
@@ -17,7 +16,7 @@ export default class RecordDate implements ng.IDirective {
     public template: string = `
 		<li class="sidebar-item">
 			<div class="custom-info-search-form">
-				<span class="name-info">ДАТА ЗАПИСИ {{appState.startDate}}</span>
+				<span class="name-info">ДАТА ЗАПИСИ</span>
 				<div class="clearfix"></div>
 			</div>
 			<div class="input-group custom-search-form date" id="datetimepicker1">

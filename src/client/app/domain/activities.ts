@@ -97,7 +97,7 @@ export class OneOffActivity extends Activity {
     }
 
     matches: (Date) => boolean = date =>
-        moment(date).day() === moment(this.date).day() && this.range.matches(date)
+        moment(date).isSame(moment(this.date), "day") && this.range.matches(date)
 }
 
 export class Appointment extends OneOffActivity {

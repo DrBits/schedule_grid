@@ -39,6 +39,8 @@ export default class Schedules implements ng.IDirective {
                             <label class="btn btn-success" ng-model="days" uib-btn-radio="1" uncheckable>1 день</label>
                             <label class="btn btn-success" ng-model="days" uib-btn-radio="2" uncheckable>2 дня</label>
                             <label class="btn btn-success" ng-model="days" uib-btn-radio="7" uncheckable>неделя</label>
+                            <label class="btn btn-success" ng-model="days" uib-btn-radio="14" uncheckable>2 недели</label>
+                            <label class="btn btn-success" ng-model="days" uib-btn-radio="28" uncheckable>4 недели</label>
                         </div>
                     </div>
                 </div>
@@ -56,7 +58,6 @@ export default class Schedules implements ng.IDirective {
     }
 
     private setDays: (number, Date) => void = (n, startDay) => {
-        console.log(`setting days = ${n}`)
         this.$scope.days = n
         this.$scope.dates = Array.apply(null, Array(this.$scope.days))
             .map((_, i) => i)
@@ -87,7 +88,6 @@ export default class Schedules implements ng.IDirective {
         this.$scope = this.scope = scope
         this.$scope.setDays = this.setDays
         this.$scope.appState = appState
-        console.log("appState:", appState)
         this.setDays(1, this.$scope.appState.startDate)
         this.wrapper = $(element).find('#wrapper')
         scope.scrollRef = this.wrapper[0]
@@ -95,14 +95,10 @@ export default class Schedules implements ng.IDirective {
         this.$scope.scrollPos = 0
         this.wrapper.on('scroll', this.handleScroll)
 
-        this.$scope.$watch('days', days => {
-            console.log("days changed:", days)
-            this.$scope.setDays(days, this.$scope.appState.startDate)
-        })
+        this.$scope.$watch('days', days => 
+            this.$scope.setDays(days, this.$scope.appState.startDate))
 
-        this.$scope.$watch('appState.startDate', newStartDate => {
-            console.log("start day changed:", this.$scope.appState.startDate)
-            this.$scope.setDays(this.$scope.days, this.$scope.appState.startDate)
-        })
+        this.$scope.$watch('appState.startDate', newStartDate => 
+            this.$scope.setDays(this.$scope.days, this.$scope.appState.startDate))
     }
 }
