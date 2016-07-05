@@ -22,6 +22,7 @@ interface IDoctorFilterScope extends ng.IScope {
   appState: AppState
   allSelected: (string) => boolean
   selectAllBySpec: (string, boolean) => void
+  selectedDoctor: Doctor | void
 }
 
 export default class DoctorFilter implements ng.IDirective {
@@ -53,8 +54,12 @@ export default class DoctorFilter implements ng.IDirective {
             </span>
             <div class="clearfix"></div>
         </div>
-        <div class="input-group custom-search-form">
-            <input type="text" class="form-control" placeholder="Введите текст для поиска">
+        <div class="input-group custom-search-form" >
+            <input type="text" class="form-control" placeholder="Введите текст для поиска"
+                uib-typeahead="doctor as doctor.name for doctor in doctors | filter: {name: $viewValue}"
+                ng-model="selectedDoctor"
+            ></input>
+            
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
             </span>
@@ -95,13 +100,18 @@ export default class DoctorFilter implements ng.IDirective {
 
   private selectAll: () => void = () => doctors.forEach(d => d.visible = true)
 
-  private allSelected: (string) => boolean = (spec) => 
+  private allSelected: (string) => boolean = (spec) =>
       doctors.filter(d => d.specialization === spec).reduce((a, b) => a && b.visible, true)
 
-  private selectAllBySpec: (string, boolean) => void = (spec, select) => 
+  private selectAllBySpec: (string, boolean) => void = (spec, select) =>
       doctors.filter(d => d.specialization === spec).forEach(d => d.visible = select)
 
   private deselectAll: () => void = () => doctors.forEach(d => d.visible = false)
+
+  private selectOnly: (Doctor) => void = (d) => {
+      this.deselectAll()
+      d.visible = true
+  }
 
   public link(scope: IDoctorFilterScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, filterController: FilterController) {
     this.$scope = scope as IDoctorFilterScope
@@ -116,5 +126,7 @@ export default class DoctorFilter implements ng.IDirective {
     scope.appState = appState
     scope.allSelected = this.allSelected
     scope.selectAllBySpec = this.selectAllBySpec
+
+    scope.$watch('selectedDoctor', (d: string | Doctor) => d instanceof Doctor && this.selectOnly(d))
   }
 }
