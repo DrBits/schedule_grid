@@ -5,5 +5,5 @@ export type AppState = {
 }
 
 export const appState: AppState = {
-    startDate: moment().add(1, "days").startOf("day").toDate() 
+    startDate: moment().startOf("day").toDate() 
 }

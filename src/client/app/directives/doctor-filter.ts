@@ -20,6 +20,8 @@ interface IDoctorFilterScope extends ng.IScope {
   selectAll: () => void
   deselectAll: () => void
   appState: AppState
+  allSelected: (string) => boolean
+  selectAllBySpec: (string, boolean) => void
 }
 
 export default class DoctorFilter implements ng.IDirective {
@@ -69,12 +71,16 @@ export default class DoctorFilter implements ng.IDirective {
                             <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
                         </div>
                     </div>
-                    <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="checkboxes__item">
-                        <div>{{specialization}}
-                            <div ng-repeat="doctor in doctors">
-                            <div class="checkbox__info">
-                                <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
-                            </div>
+                    <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="">
+                        <div class="clearfix">
+                            <input type="checkbox" id="spec-{{specialization}}" 
+                                ng-checked="allSelected(specialization)" 
+                                ng-click="selectAllBySpec(specialization, !allSelected(specialization))"/>
+                            <label for="spec-{{specialization}}">{{specialization}}</label>
+                            <div ng-repeat="doctor in doctors" class="checkboxes__item">
+                                <div class="checkbox__info">
+                                    <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -87,10 +93,13 @@ export default class DoctorFilter implements ng.IDirective {
   private showByAlphabet: () => void = () => this.$scope.showBy = ShowBy.alpabet
   private showBySpecialization: () => void = () => this.$scope.showBy = ShowBy.specialization
 
-  private selectAll(): void {
-      console.log("selecting all...")
-    doctors.forEach(d => d.visible = true)
-  }
+  private selectAll: () => void = () => doctors.forEach(d => d.visible = true)
+
+  private allSelected: (string) => boolean = (spec) => 
+      doctors.filter(d => d.specialization === spec).reduce((a, b) => a && b.visible, true)
+
+  private selectAllBySpec: (string, boolean) => void = (spec, select) => 
+      doctors.filter(d => d.specialization === spec).forEach(d => d.visible = select)
 
   private deselectAll: () => void = () => doctors.forEach(d => d.visible = false)
 
@@ -105,5 +114,7 @@ export default class DoctorFilter implements ng.IDirective {
     scope.selectAll = this.selectAll
     scope.deselectAll = this.deselectAll
     scope.appState = appState
+    scope.allSelected = this.allSelected
+    scope.selectAllBySpec = this.selectAllBySpec
   }
 }
