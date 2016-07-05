@@ -3,6 +3,7 @@ import * as moment from "moment"
 import * as $ from 'jquery'
 import {autobind} from "core-decorators"
 import ScheduleController from "../controllers/schedule-controller"
+import {appState, AppState} from "../app-state"
 
 interface ISchedulesScope extends ng.IScope {
     startDat: Date
@@ -12,6 +13,7 @@ interface ISchedulesScope extends ng.IScope {
     scrollRef: Element
     scrollPos: number
     strutHeight: number
+    appState: AppState
 }
 
 const today: () => Date = () => moment().startOf("day").toDate() 
@@ -54,6 +56,7 @@ export default class Schedules implements ng.IDirective {
     }
 
     private setDays: (number, Date) => void = (n, startDay) => {
+        console.log(`setting days = ${n}`)
         this.$scope.days = n
         this.$scope.dates = Array.apply(null, Array(this.$scope.days))
             .map((_, i) => i)
@@ -83,13 +86,23 @@ export default class Schedules implements ng.IDirective {
     public link(scope: ISchedulesScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes) {
         this.$scope = this.scope = scope
         this.$scope.setDays = this.setDays
-        this.setDays(1, today())
+        this.$scope.appState = appState
+        console.log("appState:", appState)
+        this.setDays(1, this.$scope.appState.startDate)
         this.wrapper = $(element).find('#wrapper')
         scope.scrollRef = this.wrapper[0]
         
         this.$scope.scrollPos = 0
         this.wrapper.on('scroll', this.handleScroll)
 
-        this.$scope.$watch('days', days => this.$scope.setDays(days, today()))
+        this.$scope.$watch('days', days => {
+            console.log("days changed:", days)
+            this.$scope.setDays(days, this.$scope.appState.startDate)
+        })
+
+        this.$scope.$watch('appState.startDate', newStartDate => {
+            console.log("start day changed:", this.$scope.appState.startDate)
+            this.$scope.setDays(this.$scope.days, this.$scope.appState.startDate)
+        })
     }
 }

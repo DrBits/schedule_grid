@@ -1,4 +1,5 @@
 import "angular";
+import {AppState, appState} from "../app-state"
 import {doctors} from "../domain/data"
 import {Doctor} from "../domain/doctor"
 import {lazyInitialize as lazy} from "core-decorators"
@@ -18,6 +19,7 @@ interface IDoctorFilterScope extends ng.IScope {
   showByAlphabet: () => void
   selectAll: () => void
   deselectAll: () => void
+  appState: AppState
 }
 
 export default class DoctorFilter implements ng.IDirective {
@@ -102,5 +104,6 @@ export default class DoctorFilter implements ng.IDirective {
     this.controller = filterController
     scope.selectAll = this.selectAll
     scope.deselectAll = this.deselectAll
+    scope.appState = appState
   }
 }
