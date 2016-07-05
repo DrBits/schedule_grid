@@ -5,8 +5,10 @@ import {autobind} from "core-decorators"
 import * as $ from 'jquery'
 import ScheduleController from "../controllers/schedule-controller"
 import {TimeRange} from "../util/time-range"
-import {activityDescriptions} from "../domain/activities"
-
+import {Activity, activityDescriptions} from "../domain/activities"
+import {appState, AppState} from '../app-state'
+import {Patient} from '../domain/patient'
+ 
 interface IIndividualScheduleScope extends ng.IScope {
     date: Date
     doctor: Doctor
@@ -15,11 +17,13 @@ interface IIndividualScheduleScope extends ng.IScope {
     shouldCollapse: () => boolean
     collapse: boolean
     scrollPos: number
-    uncollapse: () => void
-    forceUncollapse: boolean
+    expand: () => void
+    forceExpand: boolean
     strutHeight: number
     scrollTo: (string) => void
     activityDescriptions: {[key: string]: string}
+    appState: AppState
+    addAppointment: (Activity) => void
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -54,7 +58,7 @@ export default class IndividualSchedule implements ng.IDirective {
                 <div class="doctor-facility">{{doctor.facility}}, к.&nbsp;{{doctor.roomNumber}}</div>
                 <human-readable-schedule doctor="doctor" date="date"></human-readable-schedule>
                 <div class="doctor-working">
-                    Врач работает <button ng-click="uncollapse()">...</button>
+                    Врач работает <button ng-click="expand()">...</button>
                 </div>
                 <div class="human-readable-schedule">
                     <div ng-repeat="(a, b) in doctor.getHumanReadableSchedule(date)">{{a === "workingHours" ? '' : activityDescriptions[a]}} 
@@ -64,25 +68,31 @@ export default class IndividualSchedule implements ng.IDirective {
         </div>
         <div class="strut activity" style="height: {{strutHeight}}px"></div>
         <div data-ng-repeat="a in doctor.getSchedule(date)"
-            class="activity step-{{doctor.slotDuration}} {{a.activity.activity}}" 
-            data-descr="{{a.activity.description}}" 
+            class="activity step-{{doctor.slotDuration}} {{a.activity.activity}}"
+            data-descr="{{a.activity.description}}"
             data-time="{{a.time.format('HH:mm')}}">
+            
+            <button ng-if="a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient"
+                ng-click="addAppointment(a.activity.range)"
+            >
+                +
+            </button>
         </div>
       </div>
   `
 
-  private uncollapse: () => () => void = () => {
+  private expand: () => () => void = () => {
     const scope = this.$scope
     const header = this.scheduleHeader
-    return () => scope.forceUncollapse = true
+    return () => scope.forceExpand = true
   }
 
   private shouldCollapse: () => () => boolean = () => {
     const hrs = this.humanReadableSchedule
     const scope = this.$scope
     return () => {
-      if (scope.forceUncollapse) {
-        setTimeout(() => {scope.forceUncollapse = false}, 500)
+      if (scope.forceExpand) {
+        setTimeout(() => {scope.forceExpand = false}, 500)
         return false
       }
       return this.strut.clientHeight - scope.scrollPos < (<HTMLDivElement><any>hrs).offsetTop + hrs.clientHeight / 2}
@@ -98,6 +108,10 @@ export default class IndividualSchedule implements ng.IDirective {
       $(this.$scope.scrollRef).animate({scrollTop: newScrollPos}, 100)
   }
 
+  @autobind private addAppointment(a: Activity): void {
+      console.log("will add appointment for", this.$scope.appState.selectedPatient)
+  }
+
   public link(scope: IIndividualScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, ctl: ScheduleController) {
     scope.prettyDate = moment(scope.date).locale("ru").format("dd. DD MMM")
     this.humanReadableSchedule = element[0].querySelector(".human-readable-schedule")
@@ -106,9 +120,11 @@ export default class IndividualSchedule implements ng.IDirective {
     this.$scope = scope
 
     scope.shouldCollapse = this.shouldCollapse()
-    scope.uncollapse = this.uncollapse()
-    scope.forceUncollapse = false
+    scope.expand = this.expand()
+    scope.forceExpand = false
     scope.scrollTo = this.scrollTo
     scope.activityDescriptions = activityDescriptions
+    scope.appState = appState
+    scope.addAppointment = this.addAppointment
   }
 }

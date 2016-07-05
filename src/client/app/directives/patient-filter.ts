@@ -2,20 +2,18 @@ import "angular";
 import {sortBy, find} from "lodash";
 import {patients} from '../domain/data';
 import {Patient} from '../domain/patient';
+import {appState, AppState} from '../app-state'
 
 interface IPatientFilterScope extends ng.IScope {
     patients: Array<Patient>
-    searchPatient: (any) => void
+    searchPatient: (string) => void
     logout: () => void
-    messages: any
-    showBtn: boolean
+    appState: AppState
 }
 
 export default class PatientFilter implements ng.IDirective {
     scope: IPatientFilterScope
     $scope: IPatientFilterScope
-
-
 
     public template: string = `
 		<li class="sidebar-item">
@@ -23,7 +21,8 @@ export default class PatientFilter implements ng.IDirective {
 			<span class="name-info">ПАЦИЕНТЫ</span>
               <span class="pull-right">
                 <div class="btn-group" uib-dropdown>
-  					<button class="btn btn-success btn-xs dropdown-toggle" uib-dropdown-toggle type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-disabled="showBtn">
+  					<button class="btn btn-success btn-xs dropdown-toggle" uib-dropdown-toggle type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+                      ng-disabled="!appState.selectedPatient">
     					<i class="fa fa-user"></i>
     						<span class="caret"></span>
   					</button>
@@ -35,10 +34,10 @@ export default class PatientFilter implements ng.IDirective {
 				</div>
 
               </span>
-              <div ng-repeat="message in messages">
-                <p>{{message.shortName}}</p>
-                <p>{{message.birthDate}}</p>
-                <p>{{message.policyNumber}}</p>
+              <div ng-if="!!appState.selectedPatient">
+                <p>{{appState.selectedPatient.shortName}}</p>
+                <p>{{appState.selectedPatient.birthDate}}</p>
+                <p>{{appState.selectedPatient.policyNumber}}</p>
               </div>
               <div class="clearfix"></div>
           </div>
@@ -56,28 +55,19 @@ export default class PatientFilter implements ng.IDirective {
     `
 
     private logout: () => void = () => {
-        this.$scope.messages = [];
+        this.$scope.appState.selectedPatient = undefined;
     }
 
-    private searchPatient: (any) => void = (input) => {
-        if(!!input) {
-            var matches: any = input.match(/[a-zа-я][^\d\s]+[a-zа-я]/ig);
+    private searchPatient: (string) => void = (input) => {
+        if (!!input) {
+            const matches: RegExpMatchArray = input.match(/[a-zа-я][^\d\s]+[a-zа-я]/ig);
             if ( matches && matches.length >= 2 ) {
-                var inputStr: string = matches.join(" ");
-                var patientsArr = []
-                patients.forEach(value => {
-                    if(value.name.toLowerCase().indexOf(inputStr.toLowerCase()) !== -1) {
-                        patientsArr.push(value)
-                    }
-                })
-                this.$scope.messages = patientsArr;
-                this.$scope.showBtn = false;
-            } else if(input.match(/^[0-9]{16}$/)) {
-                var patientFilter: any = patients.filter((item) => item.policyNumber === input)
-                this.$scope.messages = patientFilter
-                this.$scope.showBtn = false;
+                const inputStr: string = matches.join(" ");
+                this.$scope.appState.selectedPatient = patients.filter(patient => patient.name.toLowerCase().indexOf(inputStr.toLowerCase()) !== -1)[0];
+            } else if (input.match(/^\d{16}$/)) {
+                this.$scope.appState.selectedPatient = patients.filter((item) => item.policyNumber === input)[0]
             } else {
-                this.$scope.messages = []
+                this.$scope.appState.selectedPatient = undefined
             }
         }
     }
@@ -88,7 +78,6 @@ export default class PatientFilter implements ng.IDirective {
         this.$scope.logout = this.logout
         this.$scope = <IPatientFilterScope>scope
         this.$scope.patients = sortBy(patients, 'name')
-        this.$scope.messages = []
-        this.$scope.showBtn = true
+        this.$scope.appState = appState
     }
 }
