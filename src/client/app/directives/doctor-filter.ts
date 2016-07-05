@@ -41,7 +41,7 @@ export default class DoctorFilter implements ng.IDirective {
                     <i class="fa fa-filter"></i>
                     <span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu pull-left" uib-dropdown-menu>
+                  <ul class="dropdown-menu pull-left-custom" uib-dropdown-menu>
     				<li>
     				    <a href="#" ng-click="selectAll()"><i class="fa fa-check"></i> Выбрать все</a>
     				</li>

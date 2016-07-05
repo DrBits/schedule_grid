@@ -27,7 +27,7 @@ export default class PatientFilter implements ng.IDirective {
     					<i class="fa fa-user"></i>
     						<span class="caret"></span>
   					</button>
-  						<ul class="dropdown-menu pull-left" uib-dropdown-menu>
+  						<ul class="dropdown-menu pull-left-custom" uib-dropdown-menu>
     						<li>
     							<a href="#" ng-click="logout()"><i class="fa fa-power-off"></i> Завершить работу с пациентом</a>
     						</li>
@@ -56,6 +56,7 @@ export default class PatientFilter implements ng.IDirective {
     `
 
     private logout: () => void = () => {
+        this.$scope.messages = [];
     }
 
     private getName: (any) => void = (input) => {
