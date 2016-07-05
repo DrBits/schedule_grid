@@ -52,7 +52,6 @@ export default class RecordDate implements ng.IDirective {
         this.$scope = this.scope = scope
         this.$scope.open2 = this.open2
         this.$scope.format = "dd-MM-yyyy"
-
     }
 
 }

@@ -16,6 +16,8 @@ interface IDoctorFilterScope extends ng.IScope {
   showBy: ShowBy
   showBySpecialization: () => void
   showByAlphabet: () => void
+  selectAll: () => void
+  deselectAll: () => void
 }
 
 export default class DoctorFilter implements ng.IDirective {
@@ -37,10 +39,10 @@ export default class DoctorFilter implements ng.IDirective {
                   </button>
                   <ul class="dropdown-menu pull-left" uib-dropdown-menu>
     				<li>
-    				    <a href="#"><i class="fa fa-check"></i> Выбрать все</a>
+    				    <a href="#" ng-click="selectAll()"><i class="fa fa-check"></i> Выбрать все</a>
     				</li>
     				<li>
-    				    <a href="#"><i class="fa fa-times"></i> Отменить все</a>
+    				    <a href="#" ng-click="deselectAll()"><i class="fa fa-times"></i> Отменить все</a>
     				</li>
   				  </ul>
                 </div>
@@ -83,7 +85,14 @@ export default class DoctorFilter implements ng.IDirective {
   private showByAlphabet: () => void = () => this.$scope.showBy = ShowBy.alpabet
   private showBySpecialization: () => void = () => this.$scope.showBy = ShowBy.specialization
 
-  public link(scope: ng.IScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, filterController: FilterController) {
+  private selectAll(): void {
+      console.log("selecting all...")
+    doctors.forEach(d => d.visible = true)
+  }
+
+  private deselectAll: () => void = () => doctors.forEach(d => d.visible = false)
+
+  public link(scope: IDoctorFilterScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, filterController: FilterController) {
     this.$scope = scope as IDoctorFilterScope
     this.$scope.doctors = sortBy(doctors, 'name')
     this.$scope.doctorsBySpecialization = groupBy(doctors, 'specialization')
@@ -91,5 +100,7 @@ export default class DoctorFilter implements ng.IDirective {
     this.$scope.showBySpecialization = this.showBySpecialization
     this.$scope.showByAlphabet = this.showByAlphabet
     this.controller = filterController
+    scope.selectAll = this.selectAll
+    scope.deselectAll = this.deselectAll
   }
 }
