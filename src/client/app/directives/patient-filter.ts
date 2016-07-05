@@ -5,7 +5,7 @@ import {Patient} from '../domain/patient';
 
 interface IPatientFilterScope extends ng.IScope {
     patients: Array<Patient>
-    getName: (any) => void
+    searchPatient: (any) => void
     logout: () => void
     messages: any
     showBtn: boolean
@@ -47,7 +47,7 @@ export default class PatientFilter implements ng.IDirective {
           <div class="input-group custom-search-form">
             <input type="text" class="form-control" ng-model="user" placeholder="Введите текст для поиска">
               <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="getName(user)">
+                <button class="btn btn-default" type="button" ng-click="searchPatient(user)">
                    <i class="fa fa-search"></i>
                 </button>
               </span>
@@ -59,7 +59,7 @@ export default class PatientFilter implements ng.IDirective {
         this.$scope.messages = [];
     }
 
-    private getName: (any) => void = (input) => {
+    private searchPatient: (any) => void = (input) => {
         if(!!input) {
             var matches: any = input.match(/[a-zа-я][^\d\s]+[a-zа-я]/ig);
             if ( matches && matches.length >= 2 ) {
@@ -84,7 +84,7 @@ export default class PatientFilter implements ng.IDirective {
 
     public link(scope: IPatientFilterScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) {
         this.$scope = this.scope = scope
-        this.$scope.getName = this.getName
+        this.$scope.searchPatient = this.searchPatient
         this.$scope.logout = this.logout
         this.$scope = <IPatientFilterScope>scope
         this.$scope.patients = sortBy(patients, 'name')
