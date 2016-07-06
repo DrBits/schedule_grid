@@ -1,5 +1,6 @@
 import "angular";
-import {sortBy, find} from "lodash";
+import {sortBy} from "lodash";
+import * as moment from "moment"
 import {patients} from '../domain/data';
 import {Patient} from '../domain/patient';
 import {appState, AppState} from '../app-state'
@@ -7,6 +8,7 @@ import {appState, AppState} from '../app-state'
 interface IPatientFilterScope extends ng.IScope {
     patients: Array<Patient>
     searchPatient: (string) => void
+    formatDateTime: (string) => string
     logout: () => void
     appState: AppState
 }
@@ -35,24 +37,29 @@ export default class PatientFilter implements ng.IDirective {
 
               </span>
               <div ng-if="!!appState.selectedPatient">
-                <p>{{appState.selectedPatient.shortName}}</p>
-                <p>{{appState.selectedPatient.birthDate}}</p>
-                <p>{{appState.selectedPatient.policyNumber}}</p>
+                <p class="text-primary">{{appState.selectedPatient.shortName}}</p>
+                <p class="text-primary">{{::formatDateTime(appState.selectedPatient.birthDate)}} г.р.</p>
+                <p class="text-primary">Полис ОМС: {{appState.selectedPatient.policyNumber}}</p>
               </div>
               <div class="clearfix"></div>
           </div>
           <div ng-if="selected-user">
           </div>
-          <div class="input-group custom-search-form">
+          <form ng-submit="searchPatient(user)">
+            <div class="input-group custom-search-form">
             <input type="text" class="form-control" ng-model="user" placeholder="Введите текст для поиска">
               <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="searchPatient(user)">
+                <button class="btn btn-default" type="submit">
                    <i class="fa fa-search"></i>
                 </button>
               </span>
-          </div>
+            </div>
+          </form>
     </li>
     `
+    private formatDateTime: (string) => string = (datetime) => {
+        return moment(datetime).format('MM.DD.YYYY')
+    }
 
     private logout: () => void = () => {
         this.$scope.appState.selectedPatient = undefined;
@@ -76,6 +83,7 @@ export default class PatientFilter implements ng.IDirective {
         this.$scope = this.scope = scope
         this.$scope.searchPatient = this.searchPatient
         this.$scope.logout = this.logout
+        this.$scope.formatDateTime = this.formatDateTime
         this.$scope = <IPatientFilterScope>scope
         this.$scope.patients = sortBy(patients, 'name')
         this.$scope.appState = appState
