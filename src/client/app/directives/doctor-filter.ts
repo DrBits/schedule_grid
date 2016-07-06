@@ -15,8 +15,6 @@ interface IDoctorFilterScope extends ng.IScope {
   doctors: Array<Doctor>
   doctorsBySpecialization: {[specialization: string]: Array<Doctor>}
   showBy: ShowBy
-  showBySpecialization: () => void
-  showByAlphabet: () => void
   selectAll: () => void
   deselectAll: () => void
   appState: AppState
@@ -64,9 +62,9 @@ export default class DoctorFilter implements ng.IDirective {
                 <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
             </span>
         </div>
-        <div class="input-group custom-info-search-form">
-            <span class="pull-left"><button ng-click="showBySpecialization()" class="btn btn-default">По специальностям</button></span>
-            <span class="pull-right"><button ng-click="showByAlphabet()" class="btn btn-default">По алфавиту</button></span>
+        <div class="btn-group">
+          <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'specialization'" uncheckable>По специальности</label>
+          <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'alphabet'" uncheckable>По алфавиту</label>
         </div>
         <div class="custom-info-search-form">
             <div class="checkboxes">
@@ -95,9 +93,6 @@ export default class DoctorFilter implements ng.IDirective {
     </li>
   `
 
-  private showByAlphabet: () => void = () => this.$scope.showBy = ShowBy.alpabet
-  private showBySpecialization: () => void = () => this.$scope.showBy = ShowBy.specialization
-
   private selectAll: () => void = () => doctors.forEach(d => d.visible = true)
 
   private allSelected: (string) => boolean = (spec) =>
@@ -118,8 +113,6 @@ export default class DoctorFilter implements ng.IDirective {
     this.$scope.doctors = sortBy(doctors, 'name')
     this.$scope.doctorsBySpecialization = groupBy(doctors, 'specialization')
     this.$scope.showBy = ShowBy.alpabet
-    this.$scope.showBySpecialization = this.showBySpecialization
-    this.$scope.showByAlphabet = this.showByAlphabet
     this.controller = filterController
     scope.selectAll = this.selectAll
     scope.deselectAll = this.deselectAll

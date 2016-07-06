@@ -96,12 +96,9 @@ export default class IndividualSchedule implements ng.IDirective {
   }
 
   @autobind private scrollTo(time: string) {
-      console.log("---", time)
       const tr = new TimeRange(time)
       const e = $(this.$scope.scrollRef).find(`[data-time='${tr.since.toString()}']`)[0]
-      console.log(`will scroll to ${tr.since}`, e)
       const newScrollPos = e.offsetTop - this.$scope.strutHeight
-      console.log("-->", newScrollPos)
       $(this.$scope.scrollRef).animate({scrollTop: newScrollPos}, 100)
   }
 
