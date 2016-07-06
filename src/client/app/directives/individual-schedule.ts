@@ -23,7 +23,6 @@ interface IIndividualScheduleScope extends ng.IScope {
     scrollTo: (string) => void
     activityDescriptions: {[key: string]: string}
     appState: AppState
-    addAppointment: (Activity) => void
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -70,13 +69,11 @@ export default class IndividualSchedule implements ng.IDirective {
         <div data-ng-repeat="a in doctor.getSchedule(date)"
             class="activity step-{{doctor.slotDuration}} {{a.activity.activity}}"
             data-descr="{{a.activity.description}}"
-            data-time="{{a.time.format('HH:mm')}}">
-            
-            <button ng-if="a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient"
-                ng-click="addAppointment(a.activity.range)"
+            data-time="{{a.time.format('HH:mm')}}"
+            ng-class="{clickable: a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient}"
+            uib-tooltip="{{a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient ? 'add appointment' : ''}}"
+            ng-click="a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient ? doctor.addAppointment(a.time, appState.selectedPatient) : null"
             >
-                +
-            </button>
         </div>
       </div>
   `
@@ -108,10 +105,6 @@ export default class IndividualSchedule implements ng.IDirective {
       $(this.$scope.scrollRef).animate({scrollTop: newScrollPos}, 100)
   }
 
-  @autobind private addAppointment(a: Activity): void {
-      console.log("will add appointment for", this.$scope.appState.selectedPatient)
-  }
-
   public link(scope: IIndividualScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, ctl: ScheduleController) {
     scope.prettyDate = moment(scope.date).locale("ru").format("dd. DD MMM")
     this.humanReadableSchedule = element[0].querySelector(".human-readable-schedule")
@@ -125,6 +118,5 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.scrollTo = this.scrollTo
     scope.activityDescriptions = activityDescriptions
     scope.appState = appState
-    scope.addAppointment = this.addAppointment
   }
 }

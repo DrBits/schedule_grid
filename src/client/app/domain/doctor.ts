@@ -2,7 +2,10 @@ import {EffectiveSchedule} from "./schedules"
 import * as moment from 'moment'
 import {Activity, ActivityType} from "./activities"
 import Cache from "../util/cache"
-import {autobind} from "core-decorators"   
+import {autobind} from "core-decorators"
+import {Patient} from "./patient"
+import {TimeRange} from "../util/time-range"
+import {Appointment} from "./activities"
 
 export class Doctor {
     name: string
@@ -61,6 +64,15 @@ export class Doctor {
         })
 
         return sch
+    }
+
+    @autobind addAppointment(time: moment.Moment, patient: Patient) {
+        const tr = new TimeRange(`${time.format('HH:mm')}-${time.add(this.slotDuration, 'minutes').format('HH:mm')}`)
+        const date = time.startOf('day').toDate()
+        
+        this.schedule.appointments.push(new Appointment(date, tr, patient))
+        this.cache.invalidate(date)
+        this.hrCache.invalidate(date)
     }
 
     getSchedule: (Date) => Array<{Moment: Activity}> = date => this.cache.get(date)
