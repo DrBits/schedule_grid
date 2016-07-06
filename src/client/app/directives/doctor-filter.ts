@@ -77,7 +77,7 @@ export default class DoctorFilter implements ng.IDirective {
                         </div>
                     </li>
                     <li class="list-group-item">
-                        <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="">
+                        <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="custom-list-info">
                             <div class="clearfix">
                                 <input type="checkbox" id="spec-{{specialization}}"
                                     ng-checked="allSelected(specialization)"
