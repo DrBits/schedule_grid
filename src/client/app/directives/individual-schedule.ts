@@ -23,6 +23,7 @@ interface IIndividualScheduleScope extends ng.IScope {
     scrollTo: (string) => void
     activityDescriptions: {[key: string]: string}
     appState: AppState
+    expired: (Moment) => boolean
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -70,11 +71,16 @@ export default class IndividualSchedule implements ng.IDirective {
             class="activity step-{{doctor.slotDuration}} {{a.activity.activity}}"
             data-descr="{{a.activity.description}}"
             data-time="{{a.time.format('HH:mm')}}"
-            ng-class="{clickable: a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient}"
-            uib-tooltip="{{a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient ? 'add appointment' : ''}}"
-            ng-click="a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient ? doctor.addAppointment(a.time, appState.selectedPatient) : null"
-            >
-        </div>
+            ng-class="{clickable: a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient && !expired(a.time)}"
+            uib-tooltip="
+                {{a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient ?
+                    expired(a.time) ? 'Запись невозможна' : 'Записаться на прием' 
+                    : ''}}
+            "
+            ng-click="a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient && !expired(a.time) ? 
+                doctor.addAppointment(a.time, appState.selectedPatient) : null
+            "
+        ></div>
       </div>
   `
 
@@ -115,5 +121,6 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.scrollTo = this.scrollTo
     scope.activityDescriptions = activityDescriptions
     scope.appState = appState
+    scope.expired = m => m.isBefore(moment())
   }
 }
