@@ -56,8 +56,8 @@ export default class IndividualSchedule implements ng.IDirective {
                 <div class="doctor-specialization">{{doctor.specialization}}</div>
                 <div class="doctor-facility">{{doctor.facility}}, к.&nbsp;{{doctor.roomNumber}}</div>
                 <human-readable-schedule doctor="doctor" date="date"></human-readable-schedule>
-                <div class="doctor-working">
-                    Врач работает <button ng-click="expand()">...</button>
+                <div class="doctor-working" ng-click="expand()">
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>&nbsp;Врач работает
                 </div>
                 <div class="human-readable-schedule">
                     <div ng-repeat="(a, b) in doctor.getHumanReadableSchedule(date)">{{a === "workingHours" ? '' : activityDescriptions[a]}} 

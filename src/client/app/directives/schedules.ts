@@ -34,13 +34,14 @@ export default class Schedules implements ng.IDirective {
             </div>
             <div class="right-panel">
                 <div class="toolbar">
+                    <h1>Расписание специалистов</h2>
                     <div>
                         <div class="btn-group">
                             <label class="btn btn-success" ng-model="days" uib-btn-radio="1" uncheckable>1 день</label>
                             <label class="btn btn-success" ng-model="days" uib-btn-radio="2" uncheckable>2 дня</label>
                             <label class="btn btn-success" ng-model="days" uib-btn-radio="7" uncheckable>неделя</label>
-                            <label class="btn btn-success" ng-model="days" uib-btn-radio="14" uncheckable>2 недели</label>
-                            <label class="btn btn-success" ng-model="days" uib-btn-radio="28" uncheckable>4 недели</label>
+                            <!-- <label class="btn btn-success" ng-model="days" uib-btn-radio="14" uncheckable>2 недели</label>
+                            <label class="btn btn-success" ng-model="days" uib-btn-radio="28" uncheckable>4 недели</label> -->
                         </div>
                     </div>
                 </div>

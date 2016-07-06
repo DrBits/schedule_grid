@@ -31,7 +31,7 @@ html {
 }
 
 .left-panel {
-  background-color: lightblue;
+  background-color: $whitish;
   width: $left-pane-width;
   height: 100%;
 }
@@ -42,6 +42,21 @@ html {
   height: $toolbar-height;
   top: 0px;
   left: 0px;
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  h1 {
+      font-size: 20px;
+      padding: 0px;
+      margin: 0px;
+      display: inline-block;
+  }
+
+  div {
+      display: inline-block;
+      float: right;
+  }
 }
 
 .right-panel {
@@ -184,6 +199,7 @@ schedule {display: inline-block}
     .doctor-working {
       display: none;
       background-color: $green;
+      cursor: pointer;
     }
 
     &.collapsed {
