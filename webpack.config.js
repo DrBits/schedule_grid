@@ -16,7 +16,8 @@ module.exports = {
     alias: {
       angular: path.resolve('./node_modules/angular/angular.min.js'),
       moment: path.resolve('./node_modules/moment/min/moment-with-locales.min.js'),
-      jquery: path.resolve('./node_modules/jquery/dist/jquery.min.js')
+      jquery: path.resolve('./node_modules/jquery/dist/jquery.min.js'),
+      lodash: path.resolve('./node_modules/lodash/dist/lodash.min.js')
     },
   },
   module: {
@@ -36,8 +37,11 @@ module.exports = {
       template: './src/client/app/main.html'
     }),
 
-    // new webpack.optimize.DedupePlugin(),
-    // new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: false,
+      mangle: false
+    }),
     // new ClosureCompilerPlugin({
     //   compiler: {
     //     language_in: 'ECMASCRIPT6',
