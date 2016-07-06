@@ -66,30 +66,33 @@ export default class DoctorFilter implements ng.IDirective {
           <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'specialization'" uncheckable>По специальности</label>
           <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'alphabet'" uncheckable>По алфавиту</label>
         </div>
-        <div class="custom-info-search-form">
-            <div class="checkboxes">
-                <div class="checkboxes__group">
-                    <div ng-if="showBy === 'alphabet'" ng-repeat="doctor in doctors" class="checkboxes__item">
-                        <div class="checkbox__info">
-                            <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+
+        <div class="well" style="max-height: 300px;overflow: auto; padding: 0px">
+        		<ul class="list-group checked-list-box">
+                    <li class="list-group-item">
+                        <div ng-if="showBy === 'alphabet'" ng-repeat="doctor in doctors" class="checkboxes__item">
+                            <div class="checkbox__info">
+                                <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+                            </div>
                         </div>
-                    </div>
-                    <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="">
-                        <div class="clearfix">
-                            <input type="checkbox" id="spec-{{specialization}}" 
-                                ng-checked="allSelected(specialization)" 
-                                ng-click="selectAllBySpec(specialization, !allSelected(specialization))"/>
-                            <label for="spec-{{specialization}}">{{specialization}}</label>
-                            <div ng-repeat="doctor in doctors" class="checkboxes__item">
-                                <div class="checkbox__info">
-                                    <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+                    </li>
+                    <li class="list-group-item">
+                        <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="">
+                            <div class="clearfix">
+                                <input type="checkbox" id="spec-{{specialization}}"
+                                    ng-checked="allSelected(specialization)"
+                                    ng-click="selectAllBySpec(specialization, !allSelected(specialization))"/>
+                                <label for="spec-{{specialization}}">{{specialization}}</label>
+                                <div ng-repeat="doctor in doctors" class="checkboxes__item">
+                                    <div class="checkbox__info">
+                                        <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </li>
+                </ul>
             </div>
-        </div>
     </li>
   `
 
