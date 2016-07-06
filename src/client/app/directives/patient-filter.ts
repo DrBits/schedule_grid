@@ -36,7 +36,7 @@ export default class PatientFilter implements ng.IDirective {
 				</div>
 
               </span>
-              <div ng-if="!!appState.selectedPatient">
+              <div ng-if="!!appState.selectedPatient" class="custom-list-info">
                 <p class="text-primary">{{appState.selectedPatient.shortName}}</p>
                 <p class="text-primary">{{::formatDateTime(appState.selectedPatient.birthDate)}} г.р.</p>
                 <p class="text-primary">Полис ОМС: {{appState.selectedPatient.policyNumber}}</p>
