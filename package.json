@@ -5,8 +5,7 @@
   "scripts": {
     "init": "npm install",
     "install": "bower install; typings install",
-    "start": "ws --directory dist",
-    "test": "gulp test"
+    "start": "ws --directory dist"
   },
   "dependencies": {
     "angular": "^1.5.7",
