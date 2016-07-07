@@ -9,6 +9,11 @@ import {Activity, activityDescriptions, ActivityType} from "../domain/activities
 import {appState, AppState} from '../app-state'
 import {Patient} from '../domain/patient'
  
+declare interface IActivityAtTime {
+    time: moment.Moment
+    activity: Activity
+}
+
 interface IIndividualScheduleScope extends ng.IScope {
     date: Date
     doctor: Doctor
@@ -24,7 +29,7 @@ interface IIndividualScheduleScope extends ng.IScope {
     activityDescriptions: {[key: string]: string}
     appState: AppState
     expired: (Moment) => boolean
-    menuOptions: (Doctor) => {[key: string]: Array<[string, Function] | void>}
+    menuOptions: (Doctor) => (IActivityAtTime) => Array<[string, Function] | void>
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -78,7 +83,7 @@ export default class IndividualSchedule implements ng.IDirective {
                     expired(a.time) ? 'Запись невозможна' : 'Записаться на прием' 
                     : ''}}
             "
-            context-menu="menuOptions(doctor)[a.activity.activity] || []"
+            context-menu="menuOptions(doctor)(a)"
             ng-click="a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient && !expired(a.time) ? 
                 doctor.addAppointment(a.time, appState.selectedPatient) : null
             "
@@ -128,12 +133,15 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.activityDescriptions = activityDescriptions
     scope.appState = appState
     scope.expired = m => m.isBefore(moment())
-    scope.menuOptions = (doctor) => ({
-        //[ActivityType.availableForAppointments]: [ ['Добавить запись', function ({a}) {console.log(doctor, a)}]],
-        [ActivityType.appointment]: [ ['Удалить запись', function ({a}) {
-            console.log(doctor, a)
-            doctor.deleteAppointment(a)
-        }] ]
-    })
+    scope.menuOptions = (doctor: Doctor) => (a: IActivityAtTime) => {
+        if (a.activity.activity === ActivityType.availableForAppointments && !!this.$scope.appState.selectedPatient && !this.$scope.expired(a.time)) { 
+            return [ ['Добавить запись', ({a}) => doctor.addAppointment(a.time, <Patient>this.$scope.appState.selectedPatient) ]] 
+        }
+        
+        else if (a.activity.activity === ActivityType.appointment && !this.$scope.expired(a.time)) {
+            return [ ['Удалить запись', ({a}) => doctor.deleteAppointment(a)] ]
+        }
+        else return []
+    }
   }
 }
