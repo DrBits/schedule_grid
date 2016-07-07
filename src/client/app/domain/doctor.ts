@@ -75,6 +75,13 @@ export class Doctor {
         this.hrCache.invalidate(date)
     }
 
+    @autobind deleteAppointment(ac) {
+        const date = ac.time.startOf('day').toDate()
+        this.schedule.appointments = this.schedule.appointments.filter(a => a !== ac.activity)
+        this.cache.invalidate(date)
+        this.hrCache.invalidate(date)
+    }
+
     getSchedule: (Date) => Array<{Moment: Activity}> = date => this.cache.get(date)
 
     getHumanReadableSchedule: (Date) => {ActivityType: string} = date => this.hrCache.get(date)
