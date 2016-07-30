@@ -20,7 +20,7 @@ html, body {
   margin: 0px;
 }
 
-html { 
+html {
   font-family: sans-serif;
 }
 
@@ -68,11 +68,25 @@ html {
 }
 
 .custom-list-info {
-  margin-top: 10px
+  margin-top: 10px;
 }
 
 .custom-list-info p{
   margin-bottom: 0px;
+  font-weight: bold;
+}
+
+.custom-list-info input {
+  margin-top: 0;
+  margin-left: 15px;
+}
+
+.custom-list-info label {
+  margin-bottom: 0;
+}
+
+.custom-list-info .checkbox__info label {
+  max-width: calc(100% - 32px);
 }
 
 table.doctor-schedule {
@@ -100,7 +114,7 @@ table.doctor-schedule {
 }
 
 div.activity::before {
-  display: block; 
+  display: block;
   content: attr(data-descr);
 }
 
@@ -118,12 +132,12 @@ div.activity::before {
   &::before { content: attr(data-time) " " attr(data-descr); }
 }
 
-.workingHours { 
+.workingHours {
   background-color: $light-gray;
   & + .workingHours {
     border: none !important;
     &::before{content: ""}
-  }  
+  }
 }
 
 .unavailable {
@@ -131,7 +145,7 @@ div.activity::before {
   & + .unavailable {
     border: none !important;
     &::before{content: ""}
-  } 
+  }
 }
 
 .training {
@@ -139,7 +153,7 @@ div.activity::before {
   & + .training {
     border: none !important;
     &::before{content: ""}
-  } 
+  }
 }
 
 .nonWorkingHours {
@@ -150,7 +164,7 @@ div.activity::before {
 
 .wrapper{
   width: 100%;
-  height: 100%; 
+  height: 100%;
   overflow-x: scroll;
   overflow-y: auto;
   margin-top: $toolbar-height;
@@ -198,7 +212,7 @@ schedule {display: inline-block}
       &.doctor-name { color: white; background-color: $light-gray; }
       &.doctor-facility { background-color: $bluish; }
       &.doctor-specialization { text-transform: lowercase; font-style: italic; color: white; border-top: 1px solid #b4b4b4; background-color: $light-gray; }
-      &.human-readable-schedule { 
+      &.human-readable-schedule {
           background-color: $green;
           .time-range + .time-range::before {display: inline-block; content: ", "; color: black;}
         }
@@ -552,6 +566,21 @@ table.dataTable thead .sorting:after {
 
 .custom-info-search-form .name-info {
   margin-left: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.custom-search-form{
+  margin-bottom: 20px;
+}
+
+.custom-doctor-tab {
+  margin-bottom: 20px;
+  display: table;
+  > .btn {
+    float: none;
+    display: table-cell;
+  }
 }
 
 .checkboxes {
@@ -560,24 +589,48 @@ table.dataTable thead .sorting:after {
   padding: 10px;
   margin: 30px 0;
 }
+
+.checked-list-box {
+  .list-group-item {
+    padding: 10px 0;
+    border: none;
+  }
+}
+
 .checkboxes__item {
-    height: 72px;
-    line-height: 72px;
     background: #fff;
     border-bottom: 1px solid #ddd;
+    padding: 0 15px;
 }
 
 .checkbox__info {
-  margin-left: 15px;
+  line-height: 50px;
+  display: inline-block;
+}
+
+.checkbox__info input {
+  vertical-align: middle;
+  display: inline;
+  margin-top: 0;
 }
 
 .checkbox__info label{
+  display: inline-block;
+  max-width: calc(100% - 17px);
   margin-left: 5px;
+  margin-bottom: 0;
+  line-height: 18px;
+  vertical-align: middle;
+  white-space: normal;
 }
 
 .pull-left-custom {
   left:auto;
   right:0;
+}
+
+.well {
+  border: 1px solid #ddd;
 }
 
 .well .list-group {

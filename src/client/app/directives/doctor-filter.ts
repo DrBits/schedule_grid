@@ -34,7 +34,7 @@ export default class DoctorFilter implements ng.IDirective {
     <li class="sidebar-item">
         <div class="custom-info-search-form">
             <span class="name-info">СПЕЦИАЛИСТЫ ({{doctors.length}}/{{doctors.length}})</span>
-            <span class="pull-right">
+            <div class="pull-right">
                 <div class="btn-group" uib-dropdown>
                   <button class="btn btn-success btn-xs dropdown-toggle" uib-dropdown-toggle type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-filter"></i>
@@ -49,7 +49,7 @@ export default class DoctorFilter implements ng.IDirective {
     				</li>
   				  </ul>
                 </div>
-            </span>
+            </div>
             <div class="clearfix"></div>
         </div>
         <div class="input-group custom-search-form" >
@@ -57,12 +57,12 @@ export default class DoctorFilter implements ng.IDirective {
                 uib-typeahead="doctor as doctor.name for doctor in doctors | filter: {name: $viewValue}"
                 ng-model="selectedDoctor"
             ></input>
-            
+
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
             </span>
         </div>
-        <div class="btn-group">
+        <div class="btn-group btn-block custom-doctor-tab">
           <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'specialization'" uncheckable>По специальности</label>
           <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'alphabet'" uncheckable>По алфавиту</label>
         </div>

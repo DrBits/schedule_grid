@@ -21,9 +21,9 @@ export default class PatientFilter implements ng.IDirective {
 		<li class="sidebar-item">
           <div class="custom-info-search-form">
 			<span class="name-info">ПАЦИЕНТЫ</span>
-              <span class="pull-right">
+              <div class="pull-right">
                 <div class="btn-group" uib-dropdown>
-  					<button class="btn btn-success btn-xs dropdown-toggle" uib-dropdown-toggle type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
+  					<button class="btn btn-success btn-xs dropdown-toggle" uib-dropdown-toggle type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                       ng-disabled="!appState.selectedPatient">
     					<i class="fa fa-user"></i>
     						<span class="caret"></span>
@@ -35,7 +35,7 @@ export default class PatientFilter implements ng.IDirective {
   						</ul>
 				</div>
 
-              </span>
+            </div>
               <div ng-if="!!appState.selectedPatient" class="custom-list-info">
                 <p class="text-primary">{{appState.selectedPatient.shortName}}</p>
                 <p class="text-primary">{{::formatDateTime(appState.selectedPatient.birthDate)}} г.р.</p>
