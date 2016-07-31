@@ -1,5 +1,5 @@
-import "angular"
-import ScheduleController from "./schedule-controller"
+import 'angular';
+import ScheduleController from './schedule-controller';
 
-angular.module("angular-ts")
-  .controller("ScheduleController", ["$scope", $scope => new ScheduleController($scope)])
+angular.module('angular-ts')
+  .controller('ScheduleController', ['$scope', $scope => new ScheduleController($scope)]);

@@ -1,90 +1,104 @@
-import {EffectiveSchedule} from "./schedules"
-import * as moment from 'moment'
-import {Activity, ActivityType} from "./activities"
-import Cache from "../util/cache"
-import {autobind} from "core-decorators"
-import {Patient} from "./patient"
-import {TimeRange} from "../util/time-range"
-import {Appointment} from "./activities"
+import { EffectiveSchedule } from './schedules';
+import * as moment from 'moment';
+import { Activity, ActivityType } from './activities';
+import Cache from '../util/cache';
+import { autobind } from 'core-decorators';
+import { Patient } from './patient';
+import { TimeRange } from '../util/time-range';
+import { Appointment } from './activities';
 
 export class Doctor {
-    name: string
-    facility: string
-    roomNumber: number
-    specialization: string
-    slotDuration: number
-    schedule: EffectiveSchedule
-    public visible: boolean = true
+  name: string;
+  facility: string;
+  roomNumber: number;
+  specialization: string;
+  slotDuration: number;
+  schedule: EffectiveSchedule;
 
-    private cache: Cache<Date, Array<{Moment: Activity}>>
-    private hrCache: Cache<Date, {ActivityType: string}>
+  public visible: boolean = true;
+  private cache: Cache<Date, Array<{Moment: Activity}>>;
+  private hrCache: Cache<Date, {ActivityType: string}>;
 
-    constructor(
-        name: string,
-        facility: string,
-        roomNumber: number,
-        specialization: string,
-        slotDuration: number,
-        schedule: EffectiveSchedule
-    ) {
-        this.name = name
-        this.facility = facility
-        this.roomNumber = roomNumber
-        this.specialization = specialization
-        this.slotDuration = slotDuration
-        this.schedule = schedule
- 
-        this.cache = new Cache<Date, Array<{Moment: Activity}>>(this.calculateSchedule)
-        this.hrCache = new Cache<Date, {ActivityType: string}>(this.calculateHumanReadableSchedule)
+  constructor(name: string,
+              facility: string,
+              roomNumber: number,
+              specialization: string,
+              slotDuration: number,
+              schedule: EffectiveSchedule) {
+    this.name = name;
+    this.facility = facility;
+    this.roomNumber = roomNumber;
+    this.specialization = specialization;
+    this.slotDuration = slotDuration;
+    this.schedule = schedule;
+
+    this.cache = new Cache<Date, Array<{Moment: Activity}>>(this.calculateSchedule);
+    this.hrCache = new Cache<Date, {ActivityType: string}>(this.calculateHumanReadableSchedule);
+  }
+
+  @autobind
+  private calculateSchedule(date: Date): Array<{Moment: Activity}> {
+    const schedule = [];
+
+    let t: moment.Moment = moment(date).startOf('day').add(8, 'hours');
+    const endT: moment.Moment = moment(date).startOf('day').add(21, 'hours');
+
+    do {
+      schedule.push({ time: moment(t), activity: this.schedule.activityAt(t.toDate()) });
     }
+    while (t.add(this.slotDuration, 'minutes').isBefore(endT));
 
-    @autobind private calculateSchedule(date: Date): Array<{Moment: Activity}> {
-        const schedule = []
+    return schedule;
+  }
 
-        let t: moment.Moment = moment(date).startOf('day').add(8, "hours")
-        const endT: moment.Moment = moment(date).startOf('day').add(21, "hours")
+  @autobind
+  private calculateHumanReadableSchedule(date: Date): {ActivityType: string} {
+    const scheduleForDay =
+      this.schedule.forDay(date).filter(a => a.activity !== ActivityType.availableForAppointments);
 
-        do { schedule.push({time: moment(t), activity: this.schedule.activityAt(t.toDate())}) } 
-        while (t.add(this.slotDuration, "minutes").isBefore(endT)) 
+    const sch: {ActivityType: string} = <{ActivityType: string}>{};
 
-        return schedule
-    }
+    const aTypes = [
+      ActivityType.workingHours,
+      ActivityType.unavailable,
+      ActivityType.training,
+      ActivityType.paperwork,
+      ActivityType.training,
+      ActivityType.vacation,
+      ActivityType.sickLeave
+    ];
 
-    @autobind private calculateHumanReadableSchedule(date: Date): {ActivityType: string} {
-        const scheduleForDay = this.schedule.forDay(date).filter(a => a.activity !== ActivityType.availableForAppointments)
+    aTypes.forEach(aT => {
+      const xs = scheduleForDay.filter(a => a.activity === aT);
+      if (xs.length > 0) {
+        sch[aT] = xs.map(x => x.range.toString());
+      }
+    });
 
-        const sch: {ActivityType: string} = <{ActivityType: string}>{}
-                
-        const aTypes = [ ActivityType.workingHours, ActivityType.unavailable, ActivityType.training, ActivityType.paperwork,
-          ActivityType.training, ActivityType.vacation, ActivityType.sickLeave ]
+    return sch;
+  }
 
-        aTypes.forEach(aT => {
-            const xs = scheduleForDay.filter(a => a.activity === aT)
-            if (xs.length > 0) sch[aT] = xs.map(x => x.range.toString())
-        })
+  @autobind addAppointment(time: moment.Moment, patient: Patient) {
+    const tr = new TimeRange(
+      `${time.format('HH:mm')}-${time.add(this.slotDuration, 'minutes').format('HH:mm')}`
+    );
+    const date = time.startOf('day').toDate();
 
-        return sch
-    }
+    this.schedule.appointments.push(new Appointment(date, tr, patient));
+    this.cache.invalidate(date);
+    this.hrCache.invalidate(date);
+  }
 
-    @autobind addAppointment(time: moment.Moment, patient: Patient) {
-        const tr = new TimeRange(`${time.format('HH:mm')}-${time.add(this.slotDuration, 'minutes').format('HH:mm')}`)
-        const date = time.startOf('day').toDate()
-        
-        this.schedule.appointments.push(new Appointment(date, tr, patient))
-        this.cache.invalidate(date)
-        this.hrCache.invalidate(date)
-    }
+  @autobind deleteAppointment(ac) {
+    const date = ac.time.startOf('day').toDate();
+    this.schedule.appointments = this.schedule.appointments.filter(a => a !== ac.activity);
+    this.cache.invalidate(date);
+    this.hrCache.invalidate(date);
+  }
 
-    @autobind deleteAppointment(ac) {
-        const date = ac.time.startOf('day').toDate()
-        this.schedule.appointments = this.schedule.appointments.filter(a => a !== ac.activity)
-        this.cache.invalidate(date)
-        this.hrCache.invalidate(date)
-    }
+  getSchedule: (Date) => Array<{Moment: Activity}> = date => this.cache.get(date);
 
-    getSchedule: (Date) => Array<{Moment: Activity}> = date => this.cache.get(date)
+  getHumanReadableSchedule: (Date) => {ActivityType: string} = date => this.hrCache.get(date);
 
-    getHumanReadableSchedule: (Date) => {ActivityType: string} = date => this.hrCache.get(date)
-
-    worksOn: (Date) => boolean = date => ActivityType.workingHours in this.hrCache.get(date)
+  worksOn: (Date) => boolean = date => ActivityType.workingHours in this.hrCache.get(date)
 }

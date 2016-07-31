@@ -1,0 +1,40 @@
+<div>
+  <div class="schedule-header">
+    <div class="schedule-header-doctor" ng-class="{collapsed: shouldCollapse() }">
+      <div class="date">{{prettyDate}}</div>
+      <div class="doctor-name">{{doctor.name}}</div>
+      <div class="doctor-specialization">{{doctor.specialization}}</div>
+      <div class="doctor-facility">{{doctor.facility}}, к.&nbsp;{{doctor.roomNumber}}</div>
+      <human-readable-schedule doctor="doctor" date="date"></human-readable-schedule>
+      <div class="doctor-working" ng-click="expand()">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>&nbsp;Врач работает
+      </div>
+      <div class="human-readable-schedule">
+        <div ng-repeat="(a, b) in doctor.getHumanReadableSchedule(date)">
+          {{a === "workingHours" ? '' : activityDescriptions[a]}}
+          <a ng-repeat="range in b" href="#" ng-click="scrollTo(range)" class="time-range">
+            {{range}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="strut activity" style="height: {{strutHeight}}px"></div>
+  <div data-ng-repeat="a in doctor.getSchedule(date)"
+       class="activity step-{{doctor.slotDuration}} {{a.activity.activity}}"
+       data-descr="{{a.activity.description}}"
+       data-time="{{a.time.format('HH:mm')}}"
+       ng-class="{clickable: a.activity.activity === 'availableForAppointments'
+              && !!appState.selectedPatient && !expired(a.time)}"
+       uib-tooltip="
+                {{a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient ?
+                    expired(a.time) ? 'Запись невозможна' : 'Записаться на прием'
+                    : ''}}
+            "
+       context-menu="menuOptions(doctor)(a)"
+       ng-click="a.activity.activity === 'availableForAppointments' &&
+                !!appState.selectedPatient && !expired(a.time) ?
+                doctor.addAppointment(a.time, appState.selectedPatient) : null
+            "
+  ></div>
+</div>

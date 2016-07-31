@@ -1,0 +1,13 @@
+<div
+  data-ng-repeat="doctor in doctors"
+  class="schedule"
+  ng-if="doctor.worksOn(date) && doctor.visible"
+>
+  <individual-schedule
+    doctor="doctor"
+    date="date"
+    scroll-ref="scrollRef"
+    scroll-pos="scrollPos"
+    strut-height="strutHeight"
+  ></individual-schedule>
+</div>

@@ -1,0 +1,37 @@
+<div class="main-container">
+  <div class="left-panel">
+    <sidebar></sidebar>
+  </div>
+  <div class="right-panel">
+    <div class="toolbar">
+      <h1>Расписание специалистов</h2>
+        <div>
+          <div class="btn-group">
+            <label class="btn btn-success" ng-model="days" uib-btn-radio="1" uncheckable>
+              1 день
+            </label>
+            <label class="btn btn-success" ng-model="days" uib-btn-radio="2" uncheckable>
+              2 дня
+            </label>
+            <label class="btn btn-success" ng-model="days" uib-btn-radio="7" uncheckable>
+              неделя
+            </label>
+            <!--
+            <label class="btn btn-success" ng-model="days" uib-btn-radio="14" uncheckable>
+              2 недели
+            </label>
+            <label class="btn btn-success" ng-model="days" uib-btn-radio="28" uncheckable>
+              4 недели
+            </label>
+            -->
+          </div>
+        </div>
+    </div>
+    <div class="wrapper" id="wrapper">
+      <div class="content">
+        <schedule ng-repeat="d in dates" date="d" scroll-ref="scrollRef" scroll-pos="scrollPos"
+                  doctor-filter="doctorFilter" strut-height="strutHeight" ></schedule>
+      </div>
+    </div>
+  </div>
+</div>

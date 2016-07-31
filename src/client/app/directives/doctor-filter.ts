@@ -1,128 +1,68 @@
-import "angular";
-import {AppState, appState} from "../app-state"
-import {doctors} from "../domain/data"
-import {Doctor} from "../domain/doctor"
-import {lazyInitialize as lazy} from "core-decorators"
-import {groupBy, sortBy} from "lodash"
-import FilterController from "../controllers/schedule-controller"
+import 'angular';
+import { AppState, appState } from '../app-state';
+import { doctors } from '../domain/data';
+import { Doctor } from '../domain/doctor';
+import { lazyInitialize as lazy } from 'core-decorators';
+import { groupBy, sortBy } from 'lodash';
+import FilterController from '../controllers/schedule-controller';
+const ngTemplate = require('../templates/doctor-filter.html') as string;
 
 enum ShowBy {
-  alpabet = 'alphabet' as any as ShowBy,
+  alphabet = 'alphabet' as any as ShowBy,
   specialization = 'specialization' as any as ShowBy
 }
 
 interface IDoctorFilterScope extends ng.IScope {
-  doctors: Array<Doctor>
-  doctorsBySpecialization: {[specialization: string]: Array<Doctor>}
-  showBy: ShowBy
-  selectAll: () => void
-  deselectAll: () => void
-  appState: AppState
-  allSelected: (string) => boolean
-  selectAllBySpec: (string, boolean) => void
-  selectedDoctor: Doctor | void
+  doctors: Array<Doctor>;
+  doctorsBySpecialization: {[specialization: string]: Array<Doctor>};
+  showBy: ShowBy;
+  selectAll: () => void;
+  deselectAll: () => void;
+  appState: AppState;
+  allSelected: (string) => boolean;
+  selectAllBySpec: (string, boolean) => void;
+  selectedDoctor: Doctor | void;
 }
 
 export default class DoctorFilter implements ng.IDirective {
-  $scope: IDoctorFilterScope
-  replace = true
-  require = "^schedules"
-  restrict = 'E'
-  controller: FilterController
+  $scope: IDoctorFilterScope;
+  replace = true;
+  require = '^schedules';
+  restrict = 'E';
+  controller: FilterController;
 
-  public template: string = `
-    <li class="sidebar-item">
-        <div class="custom-info-search-form">
-            <span class="name-info">СПЕЦИАЛИСТЫ ({{doctors.length}}/{{doctors.length}})</span>
-            <div class="pull-right">
-                <div class="btn-group" uib-dropdown>
-                  <button class="btn btn-success btn-xs dropdown-toggle" uib-dropdown-toggle type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-filter"></i>
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu pull-left-custom" uib-dropdown-menu>
-    				<li>
-    				    <a href="#" ng-click="selectAll()"><i class="fa fa-check"></i> Выбрать все</a>
-    				</li>
-    				<li>
-    				    <a href="#" ng-click="deselectAll()"><i class="fa fa-times"></i> Отменить все</a>
-    				</li>
-  				  </ul>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        <div class="input-group custom-search-form" >
-            <input type="text" class="form-control" placeholder="Введите текст для поиска"
-                uib-typeahead="doctor as doctor.name for doctor in doctors | filter: {name: $viewValue}"
-                ng-model="selectedDoctor"
-            ></input>
+  public template: string = ngTemplate;
 
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
-            </span>
-        </div>
-        <div class="btn-group btn-block custom-doctor-tab">
-          <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'specialization'" uncheckable>По специальности</label>
-          <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'alphabet'" uncheckable>По алфавиту</label>
-        </div>
-
-        <div class="well" style="max-height: 300px;overflow: auto; padding: 0px">
-        		<ul class="list-group checked-list-box">
-                    <li class="list-group-item">
-                        <div ng-if="showBy === 'alphabet'" ng-repeat="doctor in doctors" class="checkboxes__item">
-                            <div class="checkbox__info">
-                                <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item">
-                        <div ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization" class="custom-list-info">
-                            <div class="clearfix">
-                                <input type="checkbox" id="spec-{{specialization}}"
-                                    ng-checked="allSelected(specialization)"
-                                    ng-click="selectAllBySpec(specialization, !allSelected(specialization))"/>
-                                <label for="spec-{{specialization}}">{{specialization}}</label>
-                                <div ng-repeat="doctor in doctors" class="checkboxes__item">
-                                    <div class="checkbox__info">
-                                        <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" /><label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-    </li>
-  `
-
-  private selectAll: () => void = () => doctors.forEach(d => d.visible = true)
+  private selectAll: () => void = () => doctors.forEach(d => d.visible = true);
 
   private allSelected: (string) => boolean = (spec) =>
-      doctors.filter(d => d.specialization === spec).reduce((a, b) => a && b.visible, true)
+    doctors.filter(d => d.specialization === spec).reduce((a, b) => a && b.visible, true);
 
   private selectAllBySpec: (string, boolean) => void = (spec, select) =>
-      doctors.filter(d => d.specialization === spec).forEach(d => d.visible = select)
+    doctors.filter(d => d.specialization === spec).forEach(d => d.visible = select);
 
-  private deselectAll: () => void = () => doctors.forEach(d => d.visible = false)
+  private deselectAll: () => void = () => doctors.forEach(d => d.visible = false);
 
   private selectOnly: (Doctor) => void = (d) => {
-      this.deselectAll()
-      d.visible = true
-  }
+    this.deselectAll();
+    d.visible = true;
+  };
 
-  public link(scope: IDoctorFilterScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes, filterController: FilterController) {
-    this.$scope = scope as IDoctorFilterScope
-    this.$scope.doctors = sortBy(doctors, 'name')
-    this.$scope.doctorsBySpecialization = groupBy(doctors, 'specialization')
-    this.$scope.showBy = ShowBy.alpabet
-    this.controller = filterController
-    scope.selectAll = this.selectAll
-    scope.deselectAll = this.deselectAll
-    scope.appState = appState
-    scope.allSelected = this.allSelected
-    scope.selectAllBySpec = this.selectAllBySpec
+  public link(scope: IDoctorFilterScope,
+              element: ng.IAugmentedJQuery,
+              attributes: ng.IAttributes,
+              filterController: FilterController) {
+    this.$scope = scope as IDoctorFilterScope;
+    this.$scope.doctors = sortBy(doctors, 'name');
+    this.$scope.doctorsBySpecialization = groupBy(doctors, 'specialization');
+    this.$scope.showBy = ShowBy.alphabet;
+    this.controller = filterController;
+    scope.selectAll = this.selectAll;
+    scope.deselectAll = this.deselectAll;
+    scope.appState = appState;
+    scope.allSelected = this.allSelected;
+    scope.selectAllBySpec = this.selectAllBySpec;
 
-    scope.$watch('selectedDoctor', (d: string | Doctor) => d instanceof Doctor && this.selectOnly(d))
+    scope.$watch('selectedDoctor', (d: string | Doctor) => d instanceof Doctor && this.selectOnly(d));
   }
 }

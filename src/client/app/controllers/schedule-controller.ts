@@ -1,14 +1,12 @@
-import "angular"
-import {Doctor} from "../domain/doctor"
-import {doctors} from "../domain/data"
+import 'angular';
 
 interface IScheduleControllerScope extends ng.IScope {
 }
 
 export default class FilterController {
-  $scope: IScheduleControllerScope
-  
+  $scope: IScheduleControllerScope;
+
   constructor($scope) {
-    this.$scope = $scope
-  } 
+    this.$scope = $scope;
+  }
 }

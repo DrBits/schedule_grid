@@ -1,13 +1,12 @@
-import "angular"
+import 'angular';
 
-import Schedules from "./schedules"
-import Schedule from "./schedule"
-import IndividualSchedule from "./individual-schedule"
-import Sidebar from "./sidebar"
-import PatientFilter from "./patient-filter"
-import RecordDate from "./record-date"
-import DoctorFilter from "./doctor-filter"
-import ScheduleController from "../controllers/schedule-controller"
+import Schedules from './schedules';
+import Schedule from './schedule';
+import IndividualSchedule from './individual-schedule';
+import Sidebar from './sidebar';
+import PatientFilter from './patient-filter';
+import RecordDate from './record-date';
+import DoctorFilter from './doctor-filter';
 
 angular.module('angular-ts')
 
@@ -17,4 +16,4 @@ angular.module('angular-ts')
 .directive('sidebar', () => new Sidebar())
 .directive('patientFilter', () => new PatientFilter())
 .directive('recordDate', () => new RecordDate())
-.directive('doctorFilter', () => new DoctorFilter())
+.directive('doctorFilter', () => new DoctorFilter());

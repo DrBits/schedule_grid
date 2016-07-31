@@ -1,14 +1,6 @@
-import "angular"
-import * as $ from "jquery"
+import 'angular';
+const ngTemplate = require('../templates/sidebar.html');
 
 export default class Sidebar implements ng.IDirective {
-	public template = `
-        <div class="sidebar-nav navbar-collapse">
-            <ul class="nav" id="side-menu">
-                <patient-filter></patient-filter>
-                <record-date></record-date>
-                <doctor-filter></doctor-filter>
-            </ul>
-        </div>
-    `
+  public template = ngTemplate;
 }
