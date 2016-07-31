@@ -29,7 +29,7 @@ export default class Schedule implements ng.IDirective {
   require = '^schedules';
   controller: ScheduleController;
 
-  public template = ngTemplate;
+  public templateUrl = ngTemplate;
 
   public link(scope: IScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, ctl: ScheduleController) {
     scope.doctors = doctors;

@@ -5,7 +5,7 @@ import { Doctor } from '../domain/doctor';
 import { lazyInitialize as lazy } from 'core-decorators';
 import { groupBy, sortBy } from 'lodash';
 import FilterController from '../controllers/schedule-controller';
-const ngTemplate = require('../templates/doctor-filter.html') as string;
+const ngTemplate = require('../templates/doctor-filter.html');
 
 enum ShowBy {
   alphabet = 'alphabet' as any as ShowBy,
@@ -31,7 +31,7 @@ export default class DoctorFilter implements ng.IDirective {
   restrict = 'E';
   controller: FilterController;
 
-  public template: string = ngTemplate;
+  public templateUrl: string = ngTemplate;
 
   private selectAll: () => void = () => doctors.forEach(d => d.visible = true);
 

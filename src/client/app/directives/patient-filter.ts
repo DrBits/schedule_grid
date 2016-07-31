@@ -18,7 +18,7 @@ export default class PatientFilter implements ng.IDirective {
   scope: IPatientFilterScope;
   $scope: IPatientFilterScope;
 
-  public template: string = ngTemplate;
+  public templateUrl: string = ngTemplate;
 
   private formatDateTime: (string) => string = (datetime) => {
     return moment(datetime).format('MM.DD.YYYY');

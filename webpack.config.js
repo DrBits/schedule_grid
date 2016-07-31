@@ -35,7 +35,7 @@ module.exports = {
       {
         test: /\.html$/,
         include: res`src/client/app/templates`,
-        loader: `html`
+        loader: `ngtemplate!html`
       }
     ]
   },
@@ -60,6 +60,6 @@ module.exports = {
     //   concurrency: 3
     // })
   ]
-}
+};
 
-console.log(require('util').inspect(module.exports, {colors: true, depth: 4}))
+// console.log(require('util').inspect(module.exports, {colors: true, depth: 4}))

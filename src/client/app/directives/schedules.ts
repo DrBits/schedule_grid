@@ -4,7 +4,7 @@ import * as $ from 'jquery';
 import { autobind } from 'core-decorators';
 import ScheduleController from '../controllers/schedule-controller';
 import { appState, AppState } from '../app-state';
-const ngTemplate = require('../templates/schedules.html') as string;
+const ngTemplate = require('../templates/schedules.html');
 
 interface ISchedulesScope extends ng.IScope {
   startDat: Date;
@@ -28,7 +28,7 @@ export default class Schedules implements ng.IDirective {
   strutHeight: number = 0;
   wrapper: JQuery;
 
-  public template = ngTemplate;
+  public templateUrl = ngTemplate;
 
   constructor($timeout) {
     this.$timeout = $timeout;

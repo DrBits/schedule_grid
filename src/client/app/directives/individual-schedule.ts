@@ -55,7 +55,7 @@ export default class IndividualSchedule implements ng.IDirective {
     this.$timeout = $timeout;
   }
 
-  public template = ngTemplate;
+  public templateUrl = ngTemplate;
 
   private expand: () => () => void = () => {
     const scope = this.$scope;

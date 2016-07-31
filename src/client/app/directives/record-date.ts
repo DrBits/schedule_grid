@@ -14,7 +14,7 @@ export default class RecordDate implements ng.IDirective {
   scope: IRecordDateScope;
   $scope: IRecordDateScope;
 
-  public template: string = ngTemplate;
+  public templateUrl: string = ngTemplate;
 
   private open2: () => void = () => {
     this.$scope.popup2 = true;
