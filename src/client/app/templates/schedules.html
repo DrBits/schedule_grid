@@ -4,8 +4,8 @@
   </div>
   <div class="right-panel">
     <div class="toolbar">
-      <h1>Расписание специалистов</h2>
-        <div>
+      <h1>Расписание специалистов</h1>
+        <div class="buttons">
           <div class="btn-group">
             <label class="btn btn-success" ng-model="days" uib-btn-radio="1" uncheckable>
               1 день
@@ -27,10 +27,21 @@
           </div>
         </div>
     </div>
+
+    <div class="messages" ng-if="noneSelected() || noFreeSlots()">
+      <div ng-if="noneSelected()">
+        Для просмотра расписания выберите Медучреждение и Доступные ресурсы
+      </div>
+      <div ng-if="!noneSelected() && noFreeSlots()">
+        На выбранный период отсутствуют свободные временные интервалы для записи.
+        Выберите другой период
+      </div>
+    </div>
+
     <div class="wrapper" id="wrapper">
       <div class="content">
         <schedule ng-repeat="d in dates" date="d" scroll-ref="scrollRef" scroll-pos="scrollPos"
-                  doctor-filter="doctorFilter" strut-height="strutHeight" ></schedule>
+                  doctor-filter="doctorFilter" strut-height="strutHeight"></schedule>
       </div>
     </div>
   </div>

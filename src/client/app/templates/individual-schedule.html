@@ -27,9 +27,18 @@
        ng-class="{clickable: a.activity.activity === 'availableForAppointments'
               && !!appState.selectedPatient && !expired(a.time)}"
        uib-tooltip="
-                {{a.activity.activity === 'availableForAppointments' && !!appState.selectedPatient ?
-                    expired(a.time) ? 'Запись невозможна' : 'Записаться на прием'
-                    : ''}}
+                {{
+                !!appState.selectedPatient ?
+                    ( a.activity.activity === 'availableForAppointments' ?
+                          expired(a.time) ? 'Запись на прошедший временной интервал недоступна'
+                            : 'Время доступно для предварительной записи'
+                      :
+                      a.activity.activity === 'appointment' ?
+                        'Временной интервал занят'
+                        : ''
+                      )
+                    : ''
+                }}
             "
        context-menu="menuOptions(doctor)(a)"
        ng-click="a.activity.activity === 'availableForAppointments' &&

@@ -96,10 +96,10 @@ export default class IndividualSchedule implements ng.IDirective {
               element: ng.IAugmentedJQuery,
               attrs: ng.IAttributes,
               ctl: ScheduleController) {
-    scope.prettyDate = moment(scope.date).locale("ru").format("dd. DD MMM");
-    this.humanReadableSchedule = element[0].querySelector(".human-readable-schedule");
-    this.scheduleHeader = element[0].querySelector(".schedule-header-doctor");
-    this.strut = element[0].querySelector(".strut");
+    scope.prettyDate = moment(scope.date).locale('ru').format('dd. DD MMM');
+    this.humanReadableSchedule = element[0].querySelector('.human-readable-schedule');
+    this.scheduleHeader = element[0].querySelector('.schedule-header-doctor');
+    this.strut = element[0].querySelector('.strut');
     this.$scope = scope;
 
     scope.shouldCollapse = this.shouldCollapse();
@@ -110,7 +110,8 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.appState = appState;
     scope.expired = m => m.isBefore(moment());
     scope.menuOptions = (doctor: Doctor) => (a: IActivityAtTime) => {
-      if (a.activity.activity === ActivityType.availableForAppointments && !!this.$scope.appState.selectedPatient && !this.$scope.expired(a.time)
+      if (a.activity.activity === ActivityType.availableForAppointments &&
+        !!this.$scope.appState.selectedPatient && !this.$scope.expired(a.time)
       ) {
         return [
           [

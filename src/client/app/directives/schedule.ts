@@ -1,5 +1,4 @@
 import 'angular';
-import * as moment from 'moment';
 import { Doctor } from '../domain/doctor';
 import { Activity } from '../domain/activities';
 import { doctors } from '../domain/data';
@@ -31,7 +30,10 @@ export default class Schedule implements ng.IDirective {
 
   public templateUrl = ngTemplate;
 
-  public link(scope: IScheduleScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, ctl: ScheduleController) {
+  public link(scope: IScheduleScope,
+              element: ng.IAugmentedJQuery,
+              attrs: ng.IAttributes,
+              ctl: ScheduleController) {
     scope.doctors = doctors;
     this.controller = ctl;
   }

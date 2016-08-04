@@ -2,7 +2,6 @@ import 'angular';
 import { AppState, appState } from '../app-state';
 import { doctors } from '../domain/data';
 import { Doctor } from '../domain/doctor';
-import { lazyInitialize as lazy } from 'core-decorators';
 import { groupBy, sortBy } from 'lodash';
 import FilterController from '../controllers/schedule-controller';
 const ngTemplate = require('../templates/doctor-filter.html');
@@ -22,6 +21,7 @@ interface IDoctorFilterScope extends ng.IScope {
   allSelected: (string) => boolean;
   selectAllBySpec: (string, boolean) => void;
   selectedDoctor: Doctor | void;
+  countSelected: () => number;
 }
 
 export default class DoctorFilter implements ng.IDirective {
@@ -48,6 +48,8 @@ export default class DoctorFilter implements ng.IDirective {
     d.visible = true;
   };
 
+  private countSelected: () => number = () => doctors.filter(d => d.visible).length;
+
   public link(scope: IDoctorFilterScope,
               element: ng.IAugmentedJQuery,
               attributes: ng.IAttributes,
@@ -62,6 +64,7 @@ export default class DoctorFilter implements ng.IDirective {
     scope.appState = appState;
     scope.allSelected = this.allSelected;
     scope.selectAllBySpec = this.selectAllBySpec;
+    scope.countSelected = this.countSelected;
 
     scope.$watch('selectedDoctor', (d: string | Doctor) => d instanceof Doctor && this.selectOnly(d));
   }

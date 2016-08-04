@@ -7,6 +7,11 @@ import { Patient } from './patient';
 import { TimeRange } from '../util/time-range';
 import { Appointment } from './activities';
 
+interface IScheduleItem {
+  time: moment.Moment;
+  activity: Activity;
+}
+
 export class Doctor {
   name: string;
   facility: string;
@@ -16,7 +21,7 @@ export class Doctor {
   schedule: EffectiveSchedule;
 
   public visible: boolean = true;
-  private cache: Cache<Date, Array<{Moment: Activity}>>;
+  private cache: Cache<Date, Array<IScheduleItem>>;
   private hrCache: Cache<Date, {ActivityType: string}>;
 
   constructor(name: string,
@@ -32,12 +37,12 @@ export class Doctor {
     this.slotDuration = slotDuration;
     this.schedule = schedule;
 
-    this.cache = new Cache<Date, Array<{Moment: Activity}>>(this.calculateSchedule);
+    this.cache = new Cache<Date, Array<IScheduleItem>>(this.calculateSchedule);
     this.hrCache = new Cache<Date, {ActivityType: string}>(this.calculateHumanReadableSchedule);
   }
 
   @autobind
-  private calculateSchedule(date: Date): Array<{Moment: Activity}> {
+  private calculateSchedule(date: Date): Array<IScheduleItem> {
     const schedule = [];
 
     let t: moment.Moment = moment(date).startOf('day').add(8, 'hours');
@@ -96,7 +101,7 @@ export class Doctor {
     this.hrCache.invalidate(date);
   }
 
-  getSchedule: (Date) => Array<{Moment: Activity}> = date => this.cache.get(date);
+  getSchedule: (Date) => Array<IScheduleItem> = date => this.cache.get(date);
 
   getHumanReadableSchedule: (Date) => {ActivityType: string} = date => this.hrCache.get(date);
 

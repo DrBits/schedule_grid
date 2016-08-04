@@ -4,6 +4,8 @@ import * as $ from 'jquery';
 import { autobind } from 'core-decorators';
 import ScheduleController from '../controllers/schedule-controller';
 import { appState, AppState } from '../app-state';
+import { doctors } from '../domain/data';
+import { ActivityType } from '../domain/activities';
 const ngTemplate = require('../templates/schedules.html');
 
 interface ISchedulesScope extends ng.IScope {
@@ -15,9 +17,14 @@ interface ISchedulesScope extends ng.IScope {
   scrollPos: number;
   strutHeight: number;
   appState: AppState;
+  isEmpty: () => boolean;
+  noneSelected: () => boolean;
+  noFreeSlots: () => boolean;
 }
 
 const today: () => Date = () => moment().startOf('day').toDate();
+
+const OR: (a: boolean, b: boolean) => boolean = (a, b) => a || b;
 
 export default class Schedules implements ng.IDirective {
   scope: ISchedulesScope;
@@ -74,6 +81,29 @@ export default class Schedules implements ng.IDirective {
     this.setDays(1, this.$scope.appState.startDate);
     this.wrapper = $(element).find('#wrapper');
     scope.scrollRef = this.wrapper[0];
+
+    this.scope.isEmpty = () => $(element).find('div.schedule').length === 0;
+
+    this.scope.noneSelected = () =>
+    doctors.filter(d => d.visible).length === 0;
+
+    this.scope.noFreeSlots = () => {
+      return !(
+        this.scope.dates.map(
+          date =>
+            doctors.filter(d => d.visible)
+              .map(
+                doctor =>
+                doctor.getSchedule(date)
+                  .filter(
+                    ({ time, activity }) =>
+                    activity.activity === ActivityType.availableForAppointments
+                  )
+                  .length > 0
+              ).reduce(OR, false)
+        ).reduce(OR, false)
+      );
+    };
 
     this.$scope.scrollPos = 0;
     this.wrapper.on('scroll', this.handleScroll);

@@ -14,11 +14,10 @@ export default class Cache<ID, T> {
 
   get: (ID) => T = id => {
     if (!this.has(id)) {
-      const v = this.getter(id);
-      this.cache[id] = v;
+      this.cache[id] = this.getter(id);
     }
     return this.cache[id];
-  }
+  };
 
   has: (ID) => boolean = id => id in this.cache;
 

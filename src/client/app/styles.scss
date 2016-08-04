@@ -12,7 +12,7 @@ $orange: #d2613e;
 $left-pane-width: 300px;
 $toolbar-height: 50px;
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -38,35 +38,55 @@ html {
   height: 100%;
 }
 
-.toolbar {
-  position: absolute;
-  width: 100%;
-  height: $toolbar-height;
-  top: 0px;
-  left: 0px;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-
-  h1 {
-    font-size: 20px;
-    padding: 0px;
-    margin: 0px;
-    display: inline-block;
-  }
-
-  div {
-    display: inline-block;
-    float: right;
-  }
-}
-
 .right-panel {
+  display: flex;
+  flex-direction: column;
   width: calc(100% - #{$left-pane-width});
-  height: calc(100% - #{$toolbar-height});
+  height: 100%;
   position: absolute;
   top: 0px;
   right: 0px;
+
+  .toolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    padding: 10px;
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      height: fit-content;
+      font-size: 20px;
+      flex-grow: 100;
+    }
+
+    .buttons {
+      height: fit-content;
+    }
+  }
+
+  .messages {
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+
+    .content {
+      position: relative;
+      width: auto;
+      white-space: nowrap;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
 }
 
 .custom-list-info {
@@ -179,21 +199,7 @@ div.activity::before {
   }
 }
 
-.wrapper {
-  width: 100%;
-  height: 100%;
-  overflow-x: scroll;
-  overflow-y: auto;
-  margin-top: $toolbar-height;
-}
 
-.content {
-  position: relative;
-  width: auto;
-  white-space: nowrap;
-  margin-left: 20px;
-  margin-right: 20px;
-}
 
 .schedule {
   font-size: 14px;
@@ -209,6 +215,20 @@ div.activity::before {
 
 schedule {
   display: inline-block
+}
+
+.uib-datepicker {
+  .dateClass > button[disabled] > span {
+    border-radius: 100px;
+    border: none;
+    background-color: transparent;
+  }
+
+  .dateClass > button > span {
+    border-radius: 100px;
+    border: 3px solid $green;
+    background-color: $green;
+  }
 }
 
 .schedule-header {

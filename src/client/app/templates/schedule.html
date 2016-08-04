@@ -1,5 +1,5 @@
 <div
-  data-ng-repeat="doctor in doctors"
+  data-ng-repeat="doctor in doctors | orderBy: 'name'"
   class="schedule"
   ng-if="doctor.worksOn(date) && doctor.visible"
 >

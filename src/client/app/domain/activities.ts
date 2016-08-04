@@ -29,15 +29,15 @@ const activityPriorities: { [key: string]: number } = {
 };
 
 export const activityDescriptions: { [key: string]: string } = {
-  [ActivityType.nonWorkingHours]: "Нерабочее время",
-  [ActivityType.workingHours]: "Врач не принимает",
-  [ActivityType.availableForAppointments]: "Запись на прием",
-  [ActivityType.appointment]: "Прием",
-  [ActivityType.training]: "Обучение",
-  [ActivityType.paperwork]: "Работа с документами",
-  [ActivityType.unavailable]: "Врач не работает",
-  [ActivityType.vacation]: "Врач в отпуске",
-  [ActivityType.sickLeave]: "Врач на больничном",
+  [ActivityType.nonWorkingHours]: 'Нерабочее время',
+  [ActivityType.workingHours]: 'Врач не принимает',
+  [ActivityType.availableForAppointments]: 'Запись на прием',
+  [ActivityType.appointment]: 'Прием',
+  [ActivityType.training]: 'Обучение',
+  [ActivityType.paperwork]: 'Работа с документами',
+  [ActivityType.unavailable]: 'Врач не работает',
+  [ActivityType.vacation]: 'Врач в отпуске',
+  [ActivityType.sickLeave]: 'Врач на больничном',
 };
 
 export class Activity {
@@ -98,7 +98,7 @@ export class OneOffActivity extends Activity {
   }
 
   matches: (Date) => boolean = date =>
-  moment(date).isSame(moment(this.date), "day") && this.range.matches(date)
+  moment(date).isSame(moment(this.date), 'day') && this.range.matches(date)
 }
 
 export class Appointment extends OneOffActivity {

@@ -48,7 +48,7 @@ export default class PatientFilter implements ng.IDirective {
     this.$scope.searchPatient = this.searchPatient;
     this.$scope.logout = this.logout;
     this.$scope.formatDateTime = this.formatDateTime;
-    this.$scope = <IPatientFilterScope>scope;
+    this.$scope = scope as IPatientFilterScope;
     this.$scope.patients = sortBy(patients, 'name');
     this.$scope.appState = appState;
   }

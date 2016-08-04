@@ -5,6 +5,7 @@
   </div>
   <div class="input-group custom-search-form date" id="datetimepicker1">
     <input
+      ng-disabled="noneSelected()"
       type="text"
       class="form-control"
       uib-datepicker-popup="{{format}}"
@@ -16,9 +17,9 @@
       alt-input-formats="altInputFormats"
       placeholder="ДД.ММ.ГГГГ"/>
     <span class="input-group-btn">
-					<button class="btn btn-default" ng-click="open2()">
-						<i class="fa fa-calendar"></i>
-					</button>
-				</span>
+      <button ng-disabled="noneSelected()" class="btn btn-default" ng-click="open2()">
+        <i class="fa fa-calendar"></i>
+      </button>
+    </span>
   </div>
 </li>
