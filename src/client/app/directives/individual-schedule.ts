@@ -33,6 +33,12 @@ interface IIndividualScheduleScope extends ng.IScope {
   menuOptions: (Doctor) => (IActivityAtTime) => Array<[string, Function] | void>;
   patientSelected: () => boolean;
   addAppointment: (doctor, time, patient) => void;
+  tooltips: {
+    free: string,
+    expired: string,
+    appointed: string
+  };
+  tooltip: (a) => string;
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -52,9 +58,11 @@ export default class IndividualSchedule implements ng.IDirective {
   private strut: Element;
   private scheduleHeader: Element;
   private $timeout: ng.ITimeoutService;
+  private $sce: ng.ISCEService;
 
-  constructor($timeout) {
+  constructor($timeout, $sce) {
     this.$timeout = $timeout;
+    this.$sce = $sce;
   }
 
   public templateUrl = ngTemplate;
@@ -134,6 +142,22 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.expired = m => m.isBefore(moment());
     scope.patientSelected = () => appState.selectedPatient instanceof Patient;
     scope.addAppointment = this.addAppointment;
+    scope.tooltips = {
+      expired: this.$sce.trustAsHtml('<div>Запись на прошедший<br/>временной интервал<br/>недоступна</div>'),
+      appointed: this.$sce.trustAsHtml('<div>Временной интервал занят</div>'),
+      free: this.$sce.trustAsHtml('<div>Время доступно для<br/>предварительной записи</div>')
+    };
+    scope.tooltip = (a) => {
+      return (!!appState.selectedPatient ?
+        ( a.activity.activity === 'availableForAppointments' ?
+            scope.expired(a.time) ? scope.tooltips.expired : scope.tooltips.free
+            :
+            a.activity.activity === 'appointment' ?
+              scope.tooltips.appointed
+              : ''
+        )
+        : '');
+    };
     scope.menuOptions = (doctor: Doctor) => (a: IActivityAtTime) => {
       if (
         a.activity.activity === ActivityType.availableForAppointments &&
