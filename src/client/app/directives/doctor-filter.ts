@@ -5,6 +5,7 @@ import { Doctor } from '../domain/doctor';
 import { groupBy, sortBy } from 'lodash';
 import FilterController from '../controllers/schedule-controller';
 const ngTemplate = require('../templates/doctor-filter.html');
+const itemTemplate = require('../templates/doctor-filter-item.html');
 
 enum ShowBy {
   alphabet = 'alphabet' as any as ShowBy,
@@ -22,6 +23,8 @@ interface IDoctorFilterScope extends ng.IScope {
   selectAllBySpec: (string, boolean) => void;
   selectedDoctor: Doctor | void;
   countSelected: () => number;
+  someSelected: () => boolean;
+  itemTemplate: string;
 }
 
 export default class DoctorFilter implements ng.IDirective {
@@ -37,6 +40,9 @@ export default class DoctorFilter implements ng.IDirective {
 
   private allSelected: (string) => boolean = (spec) =>
     doctors.filter(d => d.specialization === spec).reduce((a, b) => a && b.visible, true);
+
+  private someSelected: () => boolean = () =>
+    doctors.filter(d => d.visible).length > 0;
 
   private selectAllBySpec: (string, boolean) => void = (spec, select) =>
     doctors.filter(d => d.specialization === spec).forEach(d => d.visible = select);
@@ -65,6 +71,8 @@ export default class DoctorFilter implements ng.IDirective {
     scope.allSelected = this.allSelected;
     scope.selectAllBySpec = this.selectAllBySpec;
     scope.countSelected = this.countSelected;
+    scope.someSelected = this.someSelected;
+    scope.itemTemplate = itemTemplate;
 
     scope.$watch('selectedDoctor', (d: string | Doctor) => d instanceof Doctor && this.selectOnly(d));
   }

@@ -5,7 +5,7 @@ import { autobind } from 'core-decorators';
 import * as $ from 'jquery';
 import ScheduleController from '../controllers/schedule-controller';
 import { TimeRange } from '../util/time-range';
-import { Activity, activityDescriptions, ActivityType } from '../domain/activities';
+import { Activity, activityDescriptions, ActivityType, Appointment } from '../domain/activities';
 import { appState, AppState } from '../app-state';
 import { Patient } from '../domain/patient';
 const ngTemplate = require('../templates/individual-schedule.html') as string;
@@ -31,6 +31,8 @@ interface IIndividualScheduleScope extends ng.IScope {
   appState: AppState;
   expired: (Moment) => boolean;
   menuOptions: (Doctor) => (IActivityAtTime) => Array<[string, Function] | void>;
+  patientSelected: () => boolean;
+  addAppointment: (doctor, time, patient) => void;
 }
 
 export default class IndividualSchedule implements ng.IDirective {
@@ -88,8 +90,29 @@ export default class IndividualSchedule implements ng.IDirective {
     $(this.$scope.scrollRef).animate({ scrollTop: newScrollPos }, 100);
   }
 
-  private deleteAppointment(a: Activity) {
+  private showAppointment(doctor, {activity}) {
+    setTimeout(() => alert(
+`
+ Время: ${moment(activity.time).format()}
+ 
+ Врач:
+  ${doctor.name}
+  ${doctor.facility}
+  ${doctor.roomNumber}
+ 
+ Пациент:
+   ${activity.patient.name}
+   ${activity.patient.birthDate}
+   ${activity.patient.policyNumber}
+`
+    ));
+  }
 
+  private addAppointment(doctor, time, patient) {
+    if (confirm('Добавить запись?')) {
+      doctor.addAppointment(time, patient);
+      setTimeout(() => alert('Запись добавлена'));
+    }
   }
 
   public link(scope: IIndividualScheduleScope,
@@ -109,18 +132,30 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.activityDescriptions = activityDescriptions;
     scope.appState = appState;
     scope.expired = m => m.isBefore(moment());
+    scope.patientSelected = () => appState.selectedPatient instanceof Patient;
+    scope.addAppointment = this.addAppointment;
     scope.menuOptions = (doctor: Doctor) => (a: IActivityAtTime) => {
-      if (a.activity.activity === ActivityType.availableForAppointments &&
-        !!this.$scope.appState.selectedPatient && !this.$scope.expired(a.time)
+      if (
+        a.activity.activity === ActivityType.availableForAppointments &&
+        !!this.$scope.appState.selectedPatient &&
+        !this.$scope.expired(a.time)
       ) {
         return [
           [
-            'Добавить запись',
-            ({ a }) => doctor.addAppointment(a.time, <Patient>this.$scope.appState.selectedPatient)
+            'Создать запись',
+            ({ a }) =>
+              this.addAppointment(doctor, a.time, <Patient>this.$scope.appState.selectedPatient)
           ]
         ];
       } else if (a.activity.activity === ActivityType.appointment && !this.$scope.expired(a.time)) {
-        return [['Удалить запись', ({ a }) => doctor.deleteAppointment(a)]];
+        return [
+          ['Отменить', ({ a }) => doctor.deleteAppointment(a)],
+          ['Показать', ({ a }) => this.showAppointment(doctor, a)]
+        ];
+      } else if (a.activity.activity === ActivityType.appointment) {
+        return [
+          ['Показать', ({ a }) => this.showAppointment(doctor, a)]
+        ];
       } else {
         return [];
       }

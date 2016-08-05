@@ -5,6 +5,18 @@ import { patients } from '../domain/data';
 import { Patient } from '../domain/patient';
 import { appState, AppState } from '../app-state';
 const ngTemplate = require('../templates/patient-filter.html') as string;
+const patientFilterItemTemplate = require('../templates/patient-filter-item.html');
+import * as XRegExp from 'xregexp';
+
+angular.module('angular-ts').filter('patientFilter', () => (xs, s) => {
+  if (/\d{15}/.test(s)) {
+    return patients.filter(p => p.policyNumber === s);
+  } else if (XRegExp('\\p{L}+\\s\\p{L}+').test(s)) {
+    return patients.filter(
+      p => p.name.toLowerCase().indexOf(s.toLowerCase()) !== -1
+    );
+  }
+});
 
 interface IPatientFilterScope extends ng.IScope {
   patients: Array<Patient>;
@@ -12,6 +24,9 @@ interface IPatientFilterScope extends ng.IScope {
   formatDateTime: (string) => string;
   logout: () => void;
   appState: AppState;
+  patientSelected: () => boolean;
+  comparator: (x: any) => boolean;
+  patientFilterItemTemplate: string;
 }
 
 export default class PatientFilter implements ng.IDirective {
@@ -51,5 +66,7 @@ export default class PatientFilter implements ng.IDirective {
     this.$scope = scope as IPatientFilterScope;
     this.$scope.patients = sortBy(patients, 'name');
     this.$scope.appState = appState;
+    this.$scope.patientSelected = () => appState.selectedPatient instanceof Patient;
+    this.$scope.patientFilterItemTemplate = patientFilterItemTemplate;
   }
 }

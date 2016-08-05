@@ -4,7 +4,8 @@
     "angular-ui-bootstrap": "registry:dt/angular-ui-bootstrap#0.13.3+20160602140119",
     "core-decorators": "registry:dt/core-decorators#0.10.0+20160316155526",
     "jquery": "registry:dt/jquery#1.10.0+20160417213236",
-    "node": "registry:dt/node#6.0.0+20160728152422"
+    "node": "registry:dt/node#6.0.0+20160728152422",
+    "xregexp": "registry:dt/xregexp#3.0.0+20160317120654"
   },
   "dependencies": {
     "lodash": "registry:npm/lodash#4.0.0+20160416211519"

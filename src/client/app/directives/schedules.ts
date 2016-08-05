@@ -78,7 +78,7 @@ export default class Schedules implements ng.IDirective {
     this.$scope = this.scope = scope;
     this.$scope.setDays = this.setDays;
     this.$scope.appState = appState;
-    this.setDays(1, this.$scope.appState.startDate);
+    this.setDays(7, this.$scope.appState.startDate);
     this.wrapper = $(element).find('#wrapper');
     scope.scrollRef = this.wrapper[0];
 

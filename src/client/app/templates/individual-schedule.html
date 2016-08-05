@@ -42,8 +42,8 @@
             "
        context-menu="menuOptions(doctor)(a)"
        ng-click="a.activity.activity === 'availableForAppointments' &&
-                !!appState.selectedPatient && !expired(a.time) ?
-                doctor.addAppointment(a.time, appState.selectedPatient) : null
+                patientSelected() && !expired(a.time) ?
+                addAppointment(doctor, a.time, appState.selectedPatient) : null
             "
   ></div>
 </div>

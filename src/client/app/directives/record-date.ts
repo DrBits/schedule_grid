@@ -57,7 +57,7 @@ export default class RecordDate implements ng.IDirective {
   public link(scope: IRecordDateScope, element: ng.IAugmentedJQuery, attributes: ng.IAttributes) {
     this.$scope = this.scope = scope;
     this.$scope.open2 = this.open2;
-    this.$scope.format = 'dd-MM-yyyy';
+    this.$scope.format = 'dd.MM.yyyy';
     this.$scope.appState = appState;
     this.$scope.getDateClass = this.getDateClass;
 

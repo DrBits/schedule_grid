@@ -10,7 +10,7 @@
           data-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
-          ng-disabled="!appState.selectedPatient"
+          ng-disabled="!patientSelected()"
         >
           <i class="fa fa-user"></i>
           <span class="caret"></span>
@@ -20,9 +20,11 @@
             <a href="#" ng-click="logout()"><i class="fa fa-power-off"></i>Завершить работу с пациентом</a>
           </li>
         </ul>
+
       </div>
     </div>
-    <div ng-if="!!appState.selectedPatient" class="custom-list-info">
+    <div ng-if="patientSelected()"
+         class="custom-list-info">
       <p class="text-primary">{{appState.selectedPatient.name}}</p>
       <p class="text-primary">{{::formatDateTime(appState.selectedPatient.birthDate)}} г.р.</p>
       <p class="text-primary">Полис ОМС: {{appState.selectedPatient.policyNumber}}</p>
@@ -33,7 +35,15 @@
   </div>
   <form ng-submit="searchPatient(user)">
     <div class="input-group custom-search-form">
-      <input type="text" class="form-control" ng-model="user" placeholder="Введите текст для поиска">
+      <input type="text"
+             class="form-control"
+             placeholder="Введите текст для поиска"
+             uib-typeahead="patient as patient.name for patient in patients
+               | patientFilter : $viewValue"
+             ng-model="appState.selectedPatient"
+             typeahead-min-length="3"
+             typeahead-template-url="{{patientFilterItemTemplate}}"
+      ></input>
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit">
            <i class="fa fa-search"></i>

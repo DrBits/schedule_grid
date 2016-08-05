@@ -12,8 +12,17 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu pull-left-custom" uib-dropdown-menu>
-          <li><a href="#" ng-click="selectAll()"><i class="fa fa-check"></i> Выбрать все</a></li>
-          <li><a href="#" ng-click="deselectAll()"><i class="fa fa-times"></i> Отменить все</a></li>
+          <li>
+            <a href="#" ng-click="selectAll()">
+              <i class="fa fa-check"></i>
+              Выбрать все</a>
+          </li>
+          <li ng-if="someSelected()">
+            <a href="#" ng-click="deselectAll()">
+              <i class="fa fa-times"></i>
+              Отменить все выбранные
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -23,6 +32,8 @@
     <input type="text" class="form-control" placeholder="Введите текст для поиска"
            uib-typeahead="doctor as doctor.name for doctor in doctors | filter: {name: $viewValue}"
            ng-model="selectedDoctor"
+           typeahead-min-length="3"
+           typeahead-template-url="{{itemTemplate}}"
     ></input>
 
     <span class="input-group-btn">
@@ -30,10 +41,11 @@
         </span>
   </div>
   <div class="btn-group btn-block custom-doctor-tab">
-    <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'specialization'" uncheckable>
+    <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'specialization'"
+           uib-uncheckable="false">
       По специальности
     </label>
-    <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'alphabet'" uncheckable>
+    <label class="btn btn-default" ng-model="showBy" uib-btn-radio="'alphabet'" uib-uncheckable="false">
       По алфавиту
     </label>
   </div>
