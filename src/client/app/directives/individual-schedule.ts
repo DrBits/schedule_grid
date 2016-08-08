@@ -152,11 +152,8 @@ export default class IndividualSchedule implements ng.IDirective {
         ( a.activity.activity === 'availableForAppointments' ?
             scope.expired(a.time) ? scope.tooltips.expired : scope.tooltips.free
             :
-            a.activity.activity === 'appointment' ?
-              scope.tooltips.appointed
-              : ''
-        )
-        : '');
+            a.activity.activity === 'appointment' ? scope.tooltips.appointed : ''
+        ) : '');
     };
     scope.menuOptions = (doctor: Doctor) => (a: IActivityAtTime) => {
       if (

@@ -122,6 +122,10 @@ table.doctor-schedule {
   min-height: $min-step * 3;
   max-height: $min-step * 3;
   overflow: hidden;
+  &.workingHours, &.unavailable, &.paperwork, &.training {
+    min-height: $min-step * 6;
+    max-height: $min-step * 6;
+  }
 }
 
 .step-10 {
@@ -129,6 +133,10 @@ table.doctor-schedule {
   min-height: $min-step;
   max-height: $min-step;
   overflow: hidden;
+  &.workingHours, &.unavailable, &.paperwork, &.training {
+    min-height: $min-step * 2;
+    max-height: $min-step * 2;
+  }
 }
 
 .activity {
@@ -168,6 +176,10 @@ div.activity::before {
       content: ""
     }
   }
+
+  & + & {
+    display: none;
+  }
 }
 
 .workingHours {
@@ -188,6 +200,7 @@ div.activity::before {
 }
 
 .nonWorkingHours {
+  display: none;
   background-color: $bluish-gray;
   border-top: none !important;
   &::before {
@@ -201,6 +214,7 @@ div.activity::before {
   width: $column-width;
   max-width: $column-width;
   margin-right: 5px;
+  vertical-align: top;
 
   .activity {
     border-top: 1px dotted white;
