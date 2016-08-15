@@ -32,9 +32,9 @@ export const doctors: Doctor[] = [
           ActivityType.unavailable, new TimeRange('14:00-15:00'), [1, 2, 3, 4, 5])],
 
       [
-        new Appointment(moment().startOf('day').toDate(), new TimeRange('10:00-10:30'), patients[0]),
-        new Appointment(moment().startOf('day').toDate(), new TimeRange('10:00-10:30'), patients[1]),
-        new Appointment(moment().startOf('day').toDate(), new TimeRange('10:30-11:00'), patients[2])
+        new Appointment(moment().startOf('day').toDate(), new TimeRange('10:00-10:30'),
+          [patients[0], patients[1]]),
+        new Appointment(moment().startOf('day').toDate(), new TimeRange('10:30-11:00'), [patients[2]])
       ]
     )
   ),
@@ -56,7 +56,7 @@ export const doctors: Doctor[] = [
           ActivityType.training, new TimeRange('10:00-15:00'), [1])],
 
       [
-        new Appointment(moment().startOf('day').toDate(), new TimeRange('12:00-12:30'), patients[3])
+        new Appointment(moment().startOf('day').toDate(), new TimeRange('12:00-12:30'), [patients[3]])
       ]
     )
   ),

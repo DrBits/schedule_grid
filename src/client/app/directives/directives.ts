@@ -12,8 +12,11 @@ angular.module('angular-ts')
 
 .directive('schedules', ['$timeout', ($timeout) => new Schedules($timeout)])
 .directive('schedule', () => new Schedule())
-.directive('individualSchedule', ['$timeout', '$sce', ($timeout, $sce) =>
-  new IndividualSchedule($timeout, $sce)])
+.directive(
+  'individualSchedule',
+  ['$timeout', '$sce', '$uibModal', ($timeout, $sce, $uibModal) =>
+  new IndividualSchedule($timeout, $sce, $uibModal)]
+)
 .directive('sidebar', () => new Sidebar())
 .directive('patientFilter', () => new PatientFilter())
 .directive('recordDate', () => new RecordDate())

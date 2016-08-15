@@ -1,5 +1,5 @@
 $column-width: 200px;
-$min-step: 1.8rem;
+$min-step: 4rem;
 
 $dark-gray: #3b3b3a;
 $light-gray: #999a99;
@@ -118,13 +118,13 @@ table.doctor-schedule {
 }
 
 .step-30 {
-  height: $min-step * 3;
-  min-height: $min-step * 3;
-  max-height: $min-step * 3;
+  height: $min-step * 1;
+  min-height: $min-step * 1;
+  max-height: $min-step * 1;
   overflow: hidden;
   &.workingHours, &.unavailable, &.paperwork, &.training {
-    min-height: $min-step * 6;
-    max-height: $min-step * 6;
+    min-height: $min-step * 2;
+    max-height: $min-step * 2;
   }
 }
 
@@ -352,6 +352,7 @@ body {
     a {
       padding: 3px 20px;
       min-height: 0;
+
       div {
         white-space: normal;
       }
@@ -637,6 +638,15 @@ table.dataTable thead .sorting:after {
 .checkbox__info {
   line-height: 50px;
   display: inline-block;
+  label {
+    .doctor-name {
+      font-weight: bold;
+    }
+    .doctor-specialization,
+    .doctor-facility {
+      font-weight: normal;
+    }
+  }
 }
 
 .checkbox__info input {
@@ -665,5 +675,18 @@ table.dataTable thead .sorting:after {
 
   .list-group {
     margin-bottom: 0px;
+  }
+}
+
+.xmodal {
+  padding: 2em;
+  .buttons {
+    margin-top: 2em
+  }
+}
+
+.dropdown-menu {
+  i.fa {
+    padding-right: 6px;
   }
 }

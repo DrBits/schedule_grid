@@ -102,14 +102,14 @@ export class OneOffActivity extends Activity {
 }
 
 export class Appointment extends OneOffActivity {
-  patient: Patient;
+  patients: Patient[];
 
-  constructor(date: Date, range: TimeRange, patient: Patient) {
+  constructor(date: Date, range: TimeRange, patients: Patient[]) {
     super(ActivityType.appointment, date, range);
-    this.patient = patient;
+    this.patients = patients;
   }
 
   get description(): string {
-    return this.patient.shortName;
+    return this.patients.map(p => p.shortName).join(', ');
   }
 }

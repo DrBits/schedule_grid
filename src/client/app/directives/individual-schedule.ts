@@ -9,6 +9,15 @@ import { Activity, activityDescriptions, ActivityType, Appointment } from '../do
 import { appState, AppState } from '../app-state';
 import { Patient } from '../domain/patient';
 const ngTemplate = require('../templates/individual-schedule.html') as string;
+const confirmModalTemplate = require('../templates/confirm-modal.html') as string;
+const appointmentModalTemplate = require('../templates/appointment-modal.html') as string;
+const appointmentAddedTemplate = require('../templates/appointment-added.html') as string;
+
+interface IArrayFind<T> extends Array<T> {
+  find: (f: (x: T) => boolean) => T;
+  includes: (x: T) => boolean;
+}
+
 
 declare interface IActivityAtTime {
   time: moment.Moment;
@@ -59,10 +68,12 @@ export default class IndividualSchedule implements ng.IDirective {
   private scheduleHeader: Element;
   private $timeout: ng.ITimeoutService;
   private $sce: ng.ISCEService;
+  private $uibModal: ng.ui.bootstrap.IModalService;
 
-  constructor($timeout, $sce) {
+  constructor($timeout, $sce, $uibModal) {
     this.$timeout = $timeout;
     this.$sce = $sce;
+    this.$uibModal = $uibModal;
   }
 
   public templateUrl = ngTemplate;
@@ -98,29 +109,42 @@ export default class IndividualSchedule implements ng.IDirective {
     $(this.$scope.scrollRef).animate({ scrollTop: newScrollPos }, 100);
   }
 
-  private showAppointment(doctor, {activity}) {
-    setTimeout(() => alert(
-`
- Время: ${moment(activity.time).format()}
- 
- Врач:
-  ${doctor.name}
-  ${doctor.facility}
-  ${doctor.roomNumber}
- 
- Пациент:
-   ${activity.patient.name}
-   ${activity.patient.birthDate}
-   ${activity.patient.policyNumber}
-`
-    ));
+  @autobind
+  private showAppointment(doctor, { activity }) {
+    this.$uibModal.open({
+      animation: true,
+      templateUrl: appointmentModalTemplate,
+      controller: 'appointmentModalController',
+      resolve: {
+        doctor,
+        activity
+      }
+    });
   }
 
+  @autobind
+  private appointmentAdded() {
+    this.$uibModal.open({
+      animation: true,
+      templateUrl: appointmentAddedTemplate,
+    });
+  }
+
+  @autobind
   private addAppointment(doctor, time, patient) {
-    if (confirm('Добавить запись?')) {
-      doctor.addAppointment(time, patient);
-      setTimeout(() => alert('Запись добавлена'));
-    }
+    this.$uibModal.open({
+      animation: true,
+      templateUrl: confirmModalTemplate,
+      controller: 'confirmModalController',
+      resolve: {
+      }
+    }).result
+      .then(() => {
+        console.log('adding', doctor, time, patient)
+        doctor.addAppointment(time, patient);
+        setTimeout(this.appointmentAdded, 0);
+      })
+      .catch(() => { console.log('dismissed'); });
   }
 
   public link(scope: IIndividualScheduleScope,
@@ -143,9 +167,12 @@ export default class IndividualSchedule implements ng.IDirective {
     scope.patientSelected = () => appState.selectedPatient instanceof Patient;
     scope.addAppointment = this.addAppointment;
     scope.tooltips = {
-      expired: this.$sce.trustAsHtml('<div>Запись на прошедший<br/>временной интервал<br/>недоступна</div>'),
-      appointed: this.$sce.trustAsHtml('<div>Временной интервал занят</div>'),
-      free: this.$sce.trustAsHtml('<div>Время доступно для<br/>предварительной записи</div>')
+      expired:
+        this.$sce.trustAsHtml('<div>Запись на прошедший<br/>временной интервал<br/>недоступна</div>'),
+      appointed:
+        this.$sce.trustAsHtml('<div>Временной интервал занят</div>'),
+      free:
+        this.$sce.trustAsHtml('<div>Время доступно для<br/>предварительной записи</div>')
     };
     scope.tooltip = (a) => {
       return (!!appState.selectedPatient ?
@@ -168,16 +195,31 @@ export default class IndividualSchedule implements ng.IDirective {
               this.addAppointment(doctor, a.time, <Patient>this.$scope.appState.selectedPatient)
           ]
         ];
+      } else if (
+        a.activity.activity === ActivityType.appointment &&
+        !this.$scope.expired(a.time) &&
+        doctor.isAppointed(a.time, <Patient>this.$scope.appState.selectedPatient)
+      ) {
+        return [
+          ['Просмотр', ({ a }) => this.showAppointment(doctor, a)],
+          ['Отменить', ({ a }) => doctor.deleteAppointment(a, <Patient>this.$scope.appState.selectedPatient)]
+        ];
       } else if (a.activity.activity === ActivityType.appointment && !this.$scope.expired(a.time)) {
         return [
-          ['Отменить', ({ a }) => doctor.deleteAppointment(a)],
-          ['Показать', ({ a }) => this.showAppointment(doctor, a)]
+          ['Создать запись', ({ a }) =>
+            this.addAppointment(doctor, a.time, <Patient>this.$scope.appState.selectedPatient) ],
+          ['Просмотр', ({ a }) => this.showAppointment(doctor, a)],
+          ['Отменить', ({ a }) => doctor.deleteAppointment(a, <Patient>this.$scope.appState.selectedPatient)]
         ];
-      } else if (a.activity.activity === ActivityType.appointment) {
-        return [
-          ['Показать', ({ a }) => this.showAppointment(doctor, a)]
-        ];
-      } else {
+      }
+
+      // else if (a.activity.activity === ActivityType.appointment) {
+      //   return [
+      //     ['Просмотр', ({ a }) => this.showAppointment(doctor, a)]
+      //   ];
+      // }
+
+      else {
         return [];
       }
     };

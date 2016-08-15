@@ -24,6 +24,10 @@ export class TimeOfDay {
     // allows for comparisons with simple JS operators: < > === <= >=
     public valueOf: () => number = () => this.sinceMidnight;
 
+    public equals(that: TimeOfDay): boolean {
+      return this.hour === that.hour && this.minutes === that.minutes;
+    }
+
     constructor(p: string | [number, number]) {
         if (typeof p === 'string') {
             if (/\d\d?:\d\d?/.test(p)) {

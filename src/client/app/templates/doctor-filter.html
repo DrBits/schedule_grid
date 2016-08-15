@@ -52,17 +52,22 @@
 
   <div class="well" style="max-height: 300px;overflow: auto; padding: 0px">
     <ul class="list-group checked-list-box">
-      <li class="list-group-item">
-        <div ng-if="showBy === 'alphabet'" ng-repeat="doctor in doctors" class="checkboxes__item">
+      <li class="list-group-item" ng-if="showBy === 'alphabet'">
+        <div  ng-repeat="doctor in doctors" class="checkboxes__item">
           <div class="checkbox__info">
             <input ng-model="doctor.visible" type="checkbox" id="doctor-{{doctor.$$hashKey}}" />
-            <label for="doctor-{{doctor.$$hashKey}}">{{doctor.name}}</label>
+            <label for="doctor-{{doctor.$$hashKey}}">
+              <div class="doctor-name">{{doctor.name}}</div>
+              <div class="doctor-specialization">{{doctor.specialization.toLowerCase()}}</div>
+              <div class="doctor-facility">{{doctor.facility}},
+                к. {{doctor.roomNumber}}</div>
+            </label>
           </div>
         </div>
       </li>
-      <li class="list-group-item">
+      <li class="list-group-item" ng-if="showBy === 'specialization'">
         <div
-          ng-if="showBy === 'specialization'" ng-repeat="(specialization, doctors) in doctorsBySpecialization"
+           ng-repeat="(specialization, doctors) in doctorsBySpecialization"
           class="custom-list-info"
         >
           <div class="clearfix">

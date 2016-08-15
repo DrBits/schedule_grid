@@ -12,6 +12,11 @@ interface IScheduleItem {
   activity: Activity;
 }
 
+interface IArrayFind<T> extends Array<T> {
+  find: (f: (x: T) => boolean) => T;
+  includes: (x: T) => boolean;
+}
+
 export class Doctor {
   name: string;
   facility: string;
@@ -83,20 +88,60 @@ export class Doctor {
     return sch;
   }
 
+  isAppointed(time: moment.Moment, patient: Patient) {
+
+    const tr = new TimeRange(
+      `${time.format('HH:mm')}-${moment(time).add(this.slotDuration, 'minutes').format('HH:mm')}`
+    );
+
+    const date = moment(time).startOf('day').toDate();
+
+    const existingAppointment =
+      (this.schedule.appointments as IArrayFind<Appointment>)
+        .find(a => (a.date.getTime() === date.getTime()) && a.range.equals(tr));
+
+    if (existingAppointment) {
+      return (existingAppointment.patients as IArrayFind<Patient>).includes(patient);
+    } else {
+      return false;
+    }
+
+    // return Math.random() > .5;
+  }
+
   @autobind addAppointment(time: moment.Moment, patient: Patient) {
     const tr = new TimeRange(
-      `${time.format('HH:mm')}-${time.add(this.slotDuration, 'minutes').format('HH:mm')}`
+      `${time.format('HH:mm')}-${moment(time).add(this.slotDuration, 'minutes').format('HH:mm')}`
     );
-    const date = time.startOf('day').toDate();
+    const date = moment(time).startOf('day').toDate();
 
-    this.schedule.appointments.push(new Appointment(date, tr, patient));
+    const existingAppointment = (this.schedule.appointments as IArrayFind<Appointment>)
+      .find(a => (a.date.getTime() === date.getTime()) && a.range.equals(tr));
+
+    if (existingAppointment) {
+      if (!(existingAppointment.patients as IArrayFind<Patient>).includes(patient)) {
+        existingAppointment.patients.push(patient);
+      }
+    } else {
+      this.schedule.appointments.push(new Appointment(date, tr, [patient]));
+    }
     this.cache.invalidate(date);
     this.hrCache.invalidate(date);
   }
 
-  @autobind deleteAppointment(ac) {
+  @autobind deleteAppointment(ac: {time: moment.Moment, activity: Activity}, patient: Patient) {
     const date = ac.time.startOf('day').toDate();
-    this.schedule.appointments = this.schedule.appointments.filter(a => a !== ac.activity);
+
+    const existingAppointment: Appointment = (this.schedule.appointments as IArrayFind<Appointment>)
+      .find(a => a === ac.activity);
+
+    existingAppointment.patients =
+      existingAppointment.patients.filter(p => p !== patient);
+
+    if ((existingAppointment as Appointment).patients.length === 0) {
+      this.schedule.appointments = this.schedule.appointments.filter(a => a !== ac.activity);
+    }
+
     this.cache.invalidate(date);
     this.hrCache.invalidate(date);
   }
