@@ -110,14 +110,15 @@ export default class IndividualSchedule implements ng.IDirective {
   }
 
   @autobind
-  private showAppointment(doctor, { activity }) {
+  private showAppointment(doctor, { activity }, time) {
     this.$uibModal.open({
       animation: true,
       templateUrl: appointmentModalTemplate,
       controller: 'appointmentModalController',
       resolve: {
         doctor,
-        activity
+        activity,
+        xtime: {time: moment(time).format('HH:MM')}
       }
     });
   }
@@ -183,7 +184,11 @@ export default class IndividualSchedule implements ng.IDirective {
         ) : '');
     };
     scope.menuOptions = (doctor: Doctor) => (a: IActivityAtTime) => {
-      if (
+      if (a.activity.activity === ActivityType.appointment && this.$scope.expired(a.time)) {
+        return [
+          ['Просмотр', ({ a, time }) => this.showAppointment(doctor, a, time)]
+        ];
+      } else  if (
         a.activity.activity === ActivityType.availableForAppointments &&
         !!this.$scope.appState.selectedPatient &&
         !this.$scope.expired(a.time)
@@ -201,14 +206,14 @@ export default class IndividualSchedule implements ng.IDirective {
         doctor.isAppointed(a.time, <Patient>this.$scope.appState.selectedPatient)
       ) {
         return [
-          ['Просмотр', ({ a }) => this.showAppointment(doctor, a)],
+          // ['Просмотр', ({ a, time }) => this.showAppointment(doctor, a, time)],
           ['Отменить', ({ a }) => doctor.deleteAppointment(a, <Patient>this.$scope.appState.selectedPatient)]
         ];
       } else if (a.activity.activity === ActivityType.appointment && !this.$scope.expired(a.time)) {
         return [
           ['Создать запись', ({ a }) =>
             this.addAppointment(doctor, a.time, <Patient>this.$scope.appState.selectedPatient) ],
-          ['Просмотр', ({ a }) => this.showAppointment(doctor, a)],
+          // ['Просмотр', ({ a, time }) => this.showAppointment(doctor, a, time)],
           ['Отменить', ({ a }) => doctor.deleteAppointment(a, <Patient>this.$scope.appState.selectedPatient)]
         ];
       }

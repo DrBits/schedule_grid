@@ -1,17 +1,15 @@
 <div class="xmodal">
-  <div><h5>Время:</h5>
-    <p>{{time}}</p>
+  <div><h4>Время:</h4>
+    <p>{{$resolve.xtime.time}}</p>
   </div>
   <div>
-    <h5>Врач:</h5>
+    <h4>Врач:</h4>
     <p>{{$resolve.doctor.name}}</p>
-    <p>{{$resolve.doctor.facility}}</p>
-    <p>{{$resolve.doctor.roomNumber}}</p>
+    <p>{{$resolve.doctor.facility}}, к.&nbsp;{{$resolve.doctor.roomNumber}}</p>
   </div>
-  <div>
-    <h5>Пациент:</h5>
-    <p>{{$resolve.activity.patient.name}}</p>
-    <p>{{$resolve.activity.patient.birthDate}}</p>
-    <p>{{$resolve.activity.patient.policyNumber}}</p>
+  <div ng-repeat="p in $resolve.activity.patients">
+    <h4>Пациент:</h4>
+    <p>{{p.name}}, {{p.formattedBirthDate}}</p>
+    <p>{{p.policyNumber}}</p>
   </div>
 </div>

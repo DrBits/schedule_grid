@@ -29,6 +29,9 @@ export const doctors: Doctor[] = [
           ActivityType.availableForAppointments, new TimeRange('10:00-14:00'), [1, 2, 3, 4, 5]),
 
         new PeriodicActivity(
+          ActivityType.availableForAppointments, new TimeRange('15:00-20:00'), [1, 2, 3, 4, 5]),
+
+        new PeriodicActivity(
           ActivityType.unavailable, new TimeRange('14:00-15:00'), [1, 2, 3, 4, 5])],
 
       [
