@@ -110,7 +110,7 @@ export default class IndividualSchedule implements ng.IDirective {
   }
 
   @autobind
-  private showAppointment(doctor, { activity }, time) {
+  private showAppointment(doctor, { activity, time }) {
     this.$uibModal.open({
       animation: true,
       templateUrl: appointmentModalTemplate,
@@ -118,7 +118,7 @@ export default class IndividualSchedule implements ng.IDirective {
       resolve: {
         doctor,
         activity,
-        xtime: {time: moment(time).format('HH:MM')}
+        xtime: {time: moment(time).format('DD.MM.YYYY hh:mm')}
       }
     });
   }
@@ -183,50 +183,37 @@ export default class IndividualSchedule implements ng.IDirective {
             a.activity.activity === 'appointment' ? scope.tooltips.appointed : ''
         ) : '');
     };
+
     scope.menuOptions = (doctor: Doctor) => (a: IActivityAtTime) => {
+      const options = [];
+
       if (a.activity.activity === ActivityType.appointment && this.$scope.expired(a.time)) {
-        return [
-          ['Просмотр', ({ a, time }) => this.showAppointment(doctor, a, time)]
-        ];
-      } else  if (
-        a.activity.activity === ActivityType.availableForAppointments &&
+        options.push(['Просмотр', ({ a }) => this.showAppointment(doctor, a)])
+      }
+
+      if (
+        (a.activity.activity === ActivityType.availableForAppointments ||
+          a.activity.activity === ActivityType.appointment
+        ) &&
         !!this.$scope.appState.selectedPatient &&
-        !this.$scope.expired(a.time)
-      ) {
-        return [
-          [
-            'Создать запись',
-            ({ a }) =>
-              this.addAppointment(doctor, a.time, <Patient>this.$scope.appState.selectedPatient)
-          ]
-        ];
-      } else if (
+        !this.$scope.expired(a.time)) {
+        options.push([
+          'Создать запись',
+          ({ a }) => this.addAppointment(doctor, a.time, <Patient>this.$scope.appState.selectedPatient)
+        ]);
+      }
+
+      if (
         a.activity.activity === ActivityType.appointment &&
-        !this.$scope.expired(a.time) &&
+        (!this.$scope.expired(a.time)) &&
         doctor.isAppointed(a.time, <Patient>this.$scope.appState.selectedPatient)
       ) {
-        return [
-          // ['Просмотр', ({ a, time }) => this.showAppointment(doctor, a, time)],
+        options.push([
           ['Отменить', ({ a }) => doctor.deleteAppointment(a, <Patient>this.$scope.appState.selectedPatient)]
-        ];
-      } else if (a.activity.activity === ActivityType.appointment && !this.$scope.expired(a.time)) {
-        return [
-          ['Создать запись', ({ a }) =>
-            this.addAppointment(doctor, a.time, <Patient>this.$scope.appState.selectedPatient) ],
-          // ['Просмотр', ({ a, time }) => this.showAppointment(doctor, a, time)],
-          ['Отменить', ({ a }) => doctor.deleteAppointment(a, <Patient>this.$scope.appState.selectedPatient)]
-        ];
+        ]);
       }
 
-      // else if (a.activity.activity === ActivityType.appointment) {
-      //   return [
-      //     ['Просмотр', ({ a }) => this.showAppointment(doctor, a)]
-      //   ];
-      // }
-
-      else {
-        return [];
-      }
+      return options;
     };
   }
 }

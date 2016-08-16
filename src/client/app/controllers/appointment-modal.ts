@@ -12,9 +12,6 @@ export default class AppointmentModalController {
   constructor($scope, $uibModalInstance) {
     this.$scope = $scope;
     this.instance = $uibModalInstance;
-
     this.$scope.time = moment($scope.$resolve.activity.time).format();
-
-    console.log('appointmentModal scope:', $scope);
   }
 }
