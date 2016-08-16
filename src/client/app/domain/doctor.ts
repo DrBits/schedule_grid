@@ -105,8 +105,6 @@ export class Doctor {
     } else {
       return false;
     }
-
-    // return Math.random() > .5;
   }
 
   @autobind addAppointment(time: moment.Moment, patient: Patient) {

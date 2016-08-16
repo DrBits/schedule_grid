@@ -188,7 +188,7 @@ export default class IndividualSchedule implements ng.IDirective {
       const options = [];
 
       if (a.activity.activity === ActivityType.appointment && this.$scope.expired(a.time)) {
-        options.push(['Просмотр', ({ a }) => this.showAppointment(doctor, a)])
+        options.push(['Просмотр', ({ a }) => this.showAppointment(doctor, a)]);
       }
 
       if (
@@ -196,6 +196,7 @@ export default class IndividualSchedule implements ng.IDirective {
           a.activity.activity === ActivityType.appointment
         ) &&
         !!this.$scope.appState.selectedPatient &&
+        !doctor.isAppointed(a.time, <Patient>this.$scope.appState.selectedPatient) &&
         !this.$scope.expired(a.time)) {
         options.push([
           'Создать запись',
@@ -208,9 +209,9 @@ export default class IndividualSchedule implements ng.IDirective {
         (!this.$scope.expired(a.time)) &&
         doctor.isAppointed(a.time, <Patient>this.$scope.appState.selectedPatient)
       ) {
-        options.push([
+        options.push(
           ['Отменить', ({ a }) => doctor.deleteAppointment(a, <Patient>this.$scope.appState.selectedPatient)]
-        ]);
+        );
       }
 
       return options;
