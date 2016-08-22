@@ -11,7 +11,8 @@ export enum ActivityType {
   training = <any>'training',
   paperwork = <any>'paperwork',
   vacation = <any>'vacation',
-  sickLeave = <any>'sickLeave'
+  sickLeave = <any>'sickLeave',
+  noAppointments = <any>'noAppointments'
 }
 
 // priority
@@ -26,6 +27,7 @@ const activityPriorities: { [key: string]: number } = {
   [ActivityType.unavailable]: 5,
   [ActivityType.vacation]: 5,
   [ActivityType.sickLeave]: 5,
+  [ActivityType.noAppointments]: 6,
 };
 
 export const activityDescriptions: { [key: string]: string } = {
@@ -38,6 +40,7 @@ export const activityDescriptions: { [key: string]: string } = {
   [ActivityType.unavailable]: 'Врач не работает',
   [ActivityType.vacation]: 'Врач в отпуске',
   [ActivityType.sickLeave]: 'Врач на больничном',
+  [ActivityType.noAppointments]: 'Нет записи',
 };
 
 export class Activity {
@@ -55,6 +58,10 @@ export class Activity {
 
   get description(): string {
     return activityDescriptions[this.activity];
+  }
+
+  withRange(r: TimeRange): Activity {
+    return new Activity(this.activity, r);
   }
 }
 
@@ -111,5 +118,9 @@ export class Appointment extends OneOffActivity {
 
   get description(): string {
     return this.patients.map(p => p.shortName).join(', ');
+  }
+
+  withRange(r: TimeRange) {
+    return new Appointment(this.date, r, this.patients);
   }
 }

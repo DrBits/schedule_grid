@@ -169,7 +169,44 @@ div.activity::before {
   }
 }
 
-.workingHours, .unavailable, .paperwork, .training {
+.workingHours {
+  & + & {
+    border: none !important;
+    &::before {
+      content: ""
+    }
+  }
+
+  & + & {
+    display: none;
+  }
+}
+
+.unavailable {
+  & + & {
+    border: none !important;
+    &::before {
+      content: ""
+    }
+  }
+
+  & + & {
+    display: none;
+  }
+}
+.paperwork {
+  & + & {
+    border: none !important;
+    &::before {
+      content: ""
+    }
+  }
+
+  & + & {
+    display: none;
+  }
+}
+.training {
   & + & {
     border: none !important;
     &::before {
