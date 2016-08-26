@@ -1,4 +1,5 @@
 import 'angular';
+import 'angular-i18n/angular-locale_ru.js';
 import 'angular-ui-bootstrap';
 import 'angular-bootstrap-contextmenu/contextMenu';
 

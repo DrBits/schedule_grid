@@ -197,6 +197,19 @@ export default class IndividualSchedule implements ng.IDirective {
         ) &&
         !!this.$scope.appState.selectedPatient &&
         !doctor.isAppointed(a.time, <Patient>this.$scope.appState.selectedPatient) &&
+        this.$scope.expired(a.time)) {
+        options.push([
+          'Запись на прошедшее время недоступна',
+          () => null
+        ]);
+      }
+
+      if (
+        (a.activity.activity === ActivityType.availableForAppointments ||
+          a.activity.activity === ActivityType.appointment
+        ) &&
+        !!this.$scope.appState.selectedPatient &&
+        !doctor.isAppointed(a.time, <Patient>this.$scope.appState.selectedPatient) &&
         !this.$scope.expired(a.time)) {
         options.push([
           'Создать запись',

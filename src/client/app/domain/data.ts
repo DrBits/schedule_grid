@@ -35,9 +35,13 @@ export const doctors: Doctor[] = [
           ActivityType.unavailable, new TimeRange('14:00-15:00'), [1, 2, 3, 4, 5])],
 
       [
-        new Appointment(moment().day(1).startOf('day').toDate(), new TimeRange('10:00-10:30'),
+        new Appointment(
+          (moment().day() === 1 ? moment() : moment().day(8))
+            .startOf('day').toDate(), new TimeRange('10:00-10:30'),
           [patients[0], patients[1]]),
-        new Appointment(moment().day(1).startOf('day').toDate(), new TimeRange('10:30-11:00'), [patients[2]])
+        new Appointment(
+          (moment().day() === 1 ? moment() : moment().day(8))
+            .startOf('day').toDate(), new TimeRange('10:30-11:00'), [patients[2]])
       ]
     )
   ),
@@ -59,7 +63,8 @@ export const doctors: Doctor[] = [
           ActivityType.training, new TimeRange('10:00-15:00'), [1])],
 
       [
-        new Appointment(moment().day(1).startOf('day').toDate(), new TimeRange('12:00-12:30'), [patients[3]])
+        new Appointment((moment().day() === 1 ? moment() : moment().day(8))
+          .startOf('day').toDate(), new TimeRange('12:00-12:30'), [patients[3]])
       ]
     )
   ),
@@ -73,8 +78,8 @@ export const doctors: Doctor[] = [
       [
         new PeriodicActivity(
           ActivityType.workingHours, new TimeRange('14:00-18:00'), [5, 6],
-          moment().startOf('day').toDate(), // TODO
-          moment().startOf('day').add(2, 'months').toDate()), // TODO
+          (moment().day() === 1 ? moment() : moment().day(1)).startOf('day').toDate(), // TODO
+          (moment().day() === 1 ? moment() : moment().day(1)).startOf('day').add(2, 'months').toDate()), // TODO
 
         new PeriodicActivity(
           ActivityType.availableForAppointments, new TimeRange('14:00-18:00'), [5, 6]),

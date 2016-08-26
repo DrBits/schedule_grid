@@ -13,6 +13,7 @@ interface IRecordDateScope extends ng.IScope {
   appState: AppState;
   getDateClass: (d: {date: Date, mode: string}) => string;
   noneSelected: () => boolean;
+  disabled: (date, mode) => boolean;
 }
 
 const OR = (a, b) => a || b;
@@ -42,7 +43,10 @@ export default class RecordDate implements ng.IDirective {
   }
 
   private getDateClass: (d: {date: Date, mode: string}) => string = ({ date, mode }) =>
-    mode === 'day' && this.dateHasFreeSlots(date) ? 'dateClass' : '';
+    mode === 'day' && ([
+      this.dateHasFreeSlots(date) ? 'dateClass' : '',
+      this.$scope.disabled(date, mode) ? 'dateDisabled' : ''
+    ].join(' '));
 
   private open2: () => void = () => {
     this.$scope.popup2 = true;
@@ -60,6 +64,9 @@ export default class RecordDate implements ng.IDirective {
     this.$scope.format = 'dd.MM.yyyy';
     this.$scope.appState = appState;
     this.$scope.getDateClass = this.getDateClass;
+    this.$scope.disabled = (date, mode) => {
+      return ( mode === 'day' && ( moment(date).isBefore(moment())) );
+    };
 
     this.$scope.noneSelected = () => doctors.filter(d => d.visible).length === 0;
   }
