@@ -93,13 +93,12 @@ export default class Schedules implements ng.IDirective {
           date =>
             doctors.filter(d => d.visible)
               .map(
-                doctor =>
-                doctor.getSchedule(date)
-                  .filter(
-                    ({ time, activity }) =>
-                    activity.activity === ActivityType.availableForAppointments
+                doctor => !!doctor.getSchedule(date).find(
+                  ({ time, activity }) => (
+                    activity.activity === ActivityType.availableForAppointments &&
+                    time.isAfter(moment())
                   )
-                  .length > 0
+                )
               ).reduce(OR, false)
         ).reduce(OR, false)
       );
