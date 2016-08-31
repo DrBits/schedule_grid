@@ -82,7 +82,7 @@ export default class Schedules implements ng.IDirective {
     this.wrapper = $(element).find('#wrapper');
     scope.scrollRef = this.wrapper[0];
 
-    this.scope.isEmpty = () => $(element).find('div.schedule').length === 0;
+    this.scope.isEmpty = () => ($(element).find('div.schedule').length === 0);
 
     this.scope.noneSelected = () =>
     doctors.filter(d => d.visible).length === 0;
@@ -93,12 +93,15 @@ export default class Schedules implements ng.IDirective {
           date =>
             doctors.filter(d => d.visible)
               .map(
-                doctor => !!doctor.getSchedule(date).find(
-                  ({ time, activity }) => (
-                    activity.activity === ActivityType.availableForAppointments &&
-                    time.isAfter(moment())
+                doctor =>
+                doctor.getSchedule(date)
+                  .filter(
+                    ({ time, activity }) => (
+                      activity.activity === ActivityType.availableForAppointments &&
+                      time.isAfter(moment())
+                    )
                   )
-                )
+                  .length > 0
               ).reduce(OR, false)
         ).reduce(OR, false)
       );
