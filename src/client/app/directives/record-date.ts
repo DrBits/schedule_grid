@@ -14,6 +14,7 @@ interface IRecordDateScope extends ng.IScope {
   getDateClass: (d: {date: Date, mode: string}) => string;
   noneSelected: () => boolean;
   disabled: (date, mode) => boolean;
+  element: ng.IAugmentedJQuery;
 }
 
 const OR = (a, b) => a || b;
@@ -50,11 +51,17 @@ export default class RecordDate implements ng.IDirective {
 
   private open2: () => void = () => {
     this.$scope.popup2 = true;
+    window.setTimeout(() => (
+      this.$scope.element[0].getElementsByClassName('uib-close')[0] as HTMLButtonElement)
+        .innerText = 'Закрыть',
+      0
+    );
     this.$scope.dateOptions = {
       formatYear: 'yy',
       minDate: new Date(),
       startingDay: 1,
-      customClass: this.scope.getDateClass
+      customClass: this.scope.getDateClass,
+      closeText: 'Закрыть'
     };
   };
 
@@ -67,6 +74,7 @@ export default class RecordDate implements ng.IDirective {
     this.$scope.disabled = (date, mode) => {
       return ( mode === 'day' && ( moment(date).isBefore(moment())) );
     };
+    this.$scope.element = element;
 
     this.$scope.noneSelected = () => doctors.filter(d => d.visible).length === 0;
   }
